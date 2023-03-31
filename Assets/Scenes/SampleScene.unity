@@ -266,11 +266,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   size: 640
   countOfPoint: 320
-  width: 0.06
+  width: 0.07
   material: {fileID: 2100000, guid: 7e874b03906e55e40bb760468ee950fa, type: 2}
-  steps: 10000
+  steps: 7000
   nodes: []
-  image: {fileID: 2800000, guid: a09aea0d047491541bae686ae6a78fc0, type: 3}
+  image: {fileID: 2800000, guid: 54aa6256653747b448f6787dec34f60f, type: 3}
+  canvas: 1
 --- !u!1 &1256904486
 GameObject:
   m_ObjectHideFlags: 0

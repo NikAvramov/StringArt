@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class GenerateStringArt : MonoBehaviour
 {
+  #region Поля
   public int size;
   public int countOfPoint;
   public float width;
@@ -10,11 +11,12 @@ public class GenerateStringArt : MonoBehaviour
   public int steps;
   public List<Vector2> nodes;
   public Texture2D image;
+  public CanvasShape canvas;
 
   private float[,] pixelArray;
   private Vector2 activPoint;
   private Direct direct; //вспомогательная переменная которая будет хранить напраление с наибольшим уровенем серого
-
+  #endregion
   void Start()
   {
     //читаем картинку попиксельно и записываем значения серого в двумерный массив
@@ -28,29 +30,18 @@ public class GenerateStringArt : MonoBehaviour
       }
     }
     //создаем список из точек которые является узлами по периметру
-    nodes = new();
-    int countNodeInSide = countOfPoint / 4;
-    int delta = size / countNodeInSide;
-    for (int i = 0; i < countNodeInSide; i++)
+    // в зависимости от выбранного типа холста
+    nodes = canvas switch
     {
-      nodes.Add(new Vector2(0, i * delta));
-      nodes.Add(new Vector2(i * delta, size - 1));
-      nodes.Add(new Vector2(size - 1, size - i * delta - 1));
-      nodes.Add(new Vector2(size - i * delta - 1, 0));
-    }
-    //тут заготовка на круглое изображение
-    //var deltaFi = 360f / countOfPoint;//шаг углового расстояния между двумя соседними точками
-    //for (int i = 0; i < countOfPoint; i++)
-    //{
-    //  float fi = 0 + i * deltaFi;//текущийу угол(полярная координата)
-    //  nodes.Add(new Vector2 (radius * Mathf.Cos(fi), radius * Mathf.Sin(fi)));
-    //}
-    //берем точку и смотрим в каком напрвлении нужна самая темная линия(0 - черный, 1 - белый),
-    //проводим ее там и редактируем массив с серыми,
-    //точка куда привели линию становится новой стартовой точкой, и так  steps раз
+      CanvasShape.Square => CreateSquareCanvas(),
+      CanvasShape.Circle => CreateCircleCanvas(),
+      CanvasShape.Triangle => CreateTriangleCanvas(),
+      CanvasShape.Hexagone => CreateHexagoneCanvas(),
+      _ => null
+    };
+    //создаем список из точек которые является узлами по периметру
     activPoint = nodes[0];
     direct = new Direct();//задаем изначальные значения чтобы сравнивать
-    
   }
   void Update()
   {
@@ -84,7 +75,8 @@ public class GenerateStringArt : MonoBehaviour
       foreach (var pixel in direct.PixelsInLine)
       {
         pixelArray[(int)pixel.x, (int)pixel.y] += width;//добавляем серого там где нарисовали линию
-        Mathf.Clamp(pixelArray[(int)pixel.x, (int)pixel.y], 0f, 1f);//ограничиваем диапазон серого между 0 и 1
+        //ограничиваем диапазон серого между 0 и 1
+        pixelArray[(int)pixel.x, (int)pixel.y] = Mathf.Clamp(pixelArray[(int)pixel.x, (int)pixel.y], 0f, 1f);
       }
       activPoint = endPoint;
       steps--;
@@ -156,10 +148,62 @@ public class GenerateStringArt : MonoBehaviour
     lineRender.material = material;
     lineRender.SetPositions(new Vector3[] { start, end });
   }
+  public List<Vector2> CreateSquareCanvas()//метод для создания квадратной картины
+  {
+    var coords = new List<Vector2>();
+    int countNodeInSide = countOfPoint / 4;
+    int delta = size / countNodeInSide;
+    for (int i = 0; i < countNodeInSide; i++)
+    {
+      coords.Add(new Vector2(0, i * delta));
+      coords.Add(new Vector2(i * delta, size - 1));
+      coords.Add(new Vector2(size - 1, size - i * delta - 1));
+      coords.Add(new Vector2(size - i * delta - 1, 0));
+    }
+    return coords;
+  }
+  public List<Vector2> CreateCircleCanvas()//метод для создания круглой картины
+  {
+    var coords = new List<Vector2>();
+    var deltaFi = 360f / countOfPoint;//шаг углового расстояния между двумя соседними точками
+    for (int i = 0; i < countOfPoint; i++)
+    {
+      float fi = 0 + i * deltaFi;//текущий угол(полярная координата)
+      float r = (float)size / 2;
+
+      float x = r * Mathf.Cos(fi) + r;
+      x = Mathf.Clamp(x, 0, size - 1);
+      x = Mathf.Round(x);
+      float y = r * Mathf.Sin(fi) + r;
+      y = Mathf.Clamp(y, 0, size - 1);
+      y = Mathf.Round(y);
+      coords.Add(new Vector2(x, y));
+    }
+    return coords;
+  }
+  public List<Vector2> CreateTriangleCanvas()//метод для создания треугольной картины
+  {
+    var coords = new List<Vector2>();
+
+    return coords;
+  }
+  public List<Vector2> CreateHexagoneCanvas()//метод для создания шестиугольной картины
+  {
+    var coords = new List<Vector2>();
+
+    return coords;
+  }
 }
-public class Direct//класс, который хранит направление и средний уровен серого в этом направлении
+public class Direct//класс, который хранит направление и средний уровень серого в этом направлении
 {
   public float GrayScale { get; set; }
   public Vector2 Direction { get; set; }
   public List<Vector2> PixelsInLine { get; set; }
+}
+public enum CanvasShape
+{
+  Square,
+  Circle,
+  Triangle,
+  Hexagone,
 }
