@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CreateLinesFromPoint : MonoBehaviour
+public class GenerateStringArt : MonoBehaviour
 {
   public int size;
   public int countOfPoint;
@@ -10,12 +10,15 @@ public class CreateLinesFromPoint : MonoBehaviour
   public int steps;
   public List<Vector2> nodes;
   public Texture2D image;
-  public float[,] pixelArray;
+
+  private float[,] pixelArray;
+  private Vector2 activPoint;
+  private Direct direct; //вспомогательная переменная которая будет хранить напраление с наибольшим уровенем серого
+
   void Start()
   {
     //читаем картинку попиксельно и записываем значения серого в двумерный массив
     pixelArray = new float[image.height, image.width];
-
     for (int i = 0; i < image.height; i++)
     {
       for (int j = 0; j < image.width; j++)
@@ -28,7 +31,6 @@ public class CreateLinesFromPoint : MonoBehaviour
     nodes = new();
     int countNodeInSide = countOfPoint / 4;
     int delta = size / countNodeInSide;
-
     for (int i = 0; i < countNodeInSide; i++)
     {
       nodes.Add(new Vector2(0, i * delta));
@@ -43,13 +45,20 @@ public class CreateLinesFromPoint : MonoBehaviour
     //  float fi = 0 + i * deltaFi;//текущийу угол(полярная координата)
     //  nodes.Add(new Vector2 (radius * Mathf.Cos(fi), radius * Mathf.Sin(fi)));
     //}
-    //берем точку и смотрим в каком напрвлении нужна самая темная линия, провилим ее там и редактируем массив с серыми,
+    //берем точку и смотрим в каком напрвлении нужна самая темная линия(0 - черный, 1 - белый),
+    //проводим ее там и редактируем массив с серыми,
     //точка куда привели линию становится новой стартовой точкой, и так  steps раз
-    var activPoint = nodes[0];
-
-    for (int i = 0; i < steps; i++)
+    activPoint = nodes[0];
+    direct = new Direct();//задаем изначальные значения чтобы сравнивать
+    
+  }
+  void Update()
+  {
+    if (steps >= 0)
     {
-      var direct = new Direct(1f, activPoint);//задаем изначальные значения чтобы сравнивать
+      direct.Direction = activPoint;//задаем изначальные значения чтобы сравнивать
+      direct.GrayScale = 1.1f;
+      //в цикле перебираем все направления из активной точи и считаем среднее значение по уровню серого
       for (int j = 0; j < nodes.Count; j++)
       {
         if (nodes[j] != activPoint)
@@ -65,26 +74,27 @@ public class CreateLinesFromPoint : MonoBehaviour
           {
             direct.GrayScale = mediana;
             direct.Direction = nodes[j];
+            direct.PixelsInLine = linePixel;
           }
         }
       }
       var endPoint = direct.Direction;
       DrawLine(activPoint, endPoint);
 
-      var line = GetAllPixelInLine(activPoint, endPoint);
-      foreach (var pixel in line)
+      foreach (var pixel in direct.PixelsInLine)
       {
         pixelArray[(int)pixel.x, (int)pixel.y] += width;//добавляем серого там где нарисовали линию
-        Mathf.Clamp(pixelArray[(int)pixel.x, (int)pixel.y], 0f, 1f);
+        Mathf.Clamp(pixelArray[(int)pixel.x, (int)pixel.y], 0f, 1f);//ограничиваем диапазон серого между 0 и 1
       }
       activPoint = endPoint;
+      steps--;
     }
-
   }
+  //метод для получения координат всех пикселей на линии между 2 пикселями
+  //реализация алгоритма Безенхейма
   public List<Vector2> GetAllPixelInLine(Vector2 start, Vector2 end)
   {
     var values = new List<Vector2>();
-
     var deltaX = (int)end.x - (int)start.x;
     var deltaY = (int)end.y - (int)start.y;
 
@@ -147,13 +157,9 @@ public class CreateLinesFromPoint : MonoBehaviour
     lineRender.SetPositions(new Vector3[] { start, end });
   }
 }
-public class Direct
+public class Direct//класс, который хранит направление и средний уровен серого в этом направлении
 {
   public float GrayScale { get; set; }
   public Vector2 Direction { get; set; }
-  public Direct(float grayScale, Vector2 direction)
-  {
-    GrayScale = grayScale;
-    Direction = direction;
-  }
+  public List<Vector2> PixelsInLine { get; set; }
 }

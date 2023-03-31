@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
+  - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -159,7 +160,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.96863276, g: 0.9716981, b: 0.875445, a: 1}
+  m_BackGroundColor: {r: 0.9056604, g: 0.89511937, b: 0.71342117, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -176,16 +177,16 @@ Camera:
   far clip plane: 10000
   field of view: 60
   orthographic: 1
-  orthographic size: 700
+  orthographic size: 420
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_RenderingPath: -1
+  m_RenderingPath: 1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 0
-  m_HDR: 1
+  m_HDR: 0
   m_AllowMSAA: 1
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
@@ -200,13 +201,25 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 320, y: 320, z: -5}
+  m_LocalPosition: {x: 320, y: 320, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &519420033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c7988670eb603b4ca73a3182e07d0ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1102352994
 GameObject:
   m_ObjectHideFlags: 0
@@ -252,12 +265,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: 640
-  countOfPoint: 640
-  width: 0.1
+  countOfPoint: 320
+  width: 0.06
   material: {fileID: 2100000, guid: 7e874b03906e55e40bb760468ee950fa, type: 2}
-  steps: 12800
+  steps: 10000
   nodes: []
-  image: {fileID: 2800000, guid: 7bcaee4609bdeab4594c3d48e767dad6, type: 3}
+  image: {fileID: 2800000, guid: a09aea0d047491541bae686ae6a78fc0, type: 3}
 --- !u!1 &1256904486
 GameObject:
   m_ObjectHideFlags: 0
@@ -287,7 +300,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 0.9268903, g: 0.9339623, b: 0.66522783, a: 1}
-  m_Intensity: 2
+  m_Intensity: 5
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
