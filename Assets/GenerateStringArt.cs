@@ -19,6 +19,10 @@ public class GenerateStringArt : MonoBehaviour
   #endregion
   void Start()
   {
+    //инициализируем параметры генерации из слоя UI
+    countOfPoint = GetComponent<UIControl>().nodes;
+    steps = GetComponent<UIControl>().lines;
+    width = GetComponent<UIControl>().wight;
     //читаем картинку попиксельно и записываем значения серого в двумерный массив
     pixelArray = new float[image.height, image.width];
     for (int i = 0; i < image.height; i++)
