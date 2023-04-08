@@ -12,7 +12,7 @@ public class UIControl : MonoBehaviour
   public int nodes;
   public int lines;
   public float wight;
-
+  public string shape;
   void Start()
   {
 
@@ -33,6 +33,17 @@ public class UIControl : MonoBehaviour
   {
     float.TryParse(InputWight.text.Trim(), out wight);
     wight = Mathf.Clamp01(wight / 100);
+  }
+  public void SaveShapeCanvas(int i)
+  {
+    shape = i switch
+    {
+      0 => "Square",
+      1 => "Circle",
+      2 => "Triangle",
+      3 => "Hexagone",
+      _ => null
+    };
   }
   public void StartGeneration()
   {

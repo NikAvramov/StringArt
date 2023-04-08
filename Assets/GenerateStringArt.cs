@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,6 +24,7 @@ public class GenerateStringArt : MonoBehaviour
     countOfPoint = GetComponent<UIControl>().nodes;
     steps = GetComponent<UIControl>().lines;
     width = GetComponent<UIControl>().wight;
+   _ = Enum.TryParse(GetComponent<UIControl>().shape, true, out canvas);
     //читаем картинку попиксельно и записываем значения серого в двумерный массив
     pixelArray = new float[image.height, image.width];
     for (int i = 0; i < image.height; i++)
