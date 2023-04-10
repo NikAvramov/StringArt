@@ -8,7 +8,7 @@ public class UIControl : MonoBehaviour
   public TMP_InputField InputNodes;
   public TMP_InputField InputLines;
   public TMP_InputField InputWight;
-  public Button Go;
+  public Slider ProgressBar;
 
   public int nodes;
   public int lines;
@@ -17,7 +17,7 @@ public class UIControl : MonoBehaviour
   public Texture2D image;
   void Start()
   {
-
+   
   }
   void Update()
   {
@@ -30,6 +30,8 @@ public class UIControl : MonoBehaviour
   public void SaveCountOfLines()
   {
     int.TryParse(InputLines.text.Trim(), out lines);
+    ProgressBar.minValue = 0;
+    ProgressBar.maxValue = lines;
   }
   public void SaveWight()
   {

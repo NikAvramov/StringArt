@@ -10,6 +10,7 @@ public class GenerateStringArt : MonoBehaviour
   public float width;
   public Material material;
   public int steps;
+  public int CurrentStep { get; set; }
   public List<Vector2> nodes;
   public Texture2D image;
   public CanvasShape canvas;
@@ -23,9 +24,11 @@ public class GenerateStringArt : MonoBehaviour
     //инициализируем параметры генерации из слоя UI
     countOfPoint = GetComponent<UIControl>().nodes;
     steps = GetComponent<UIControl>().lines;
+    CurrentStep = 0;
     width = GetComponent<UIControl>().wight;
    _ = Enum.TryParse(GetComponent<UIControl>().shape, true, out canvas);
     image = GetComponent<UIControl>().image;
+    size = image.width;
     //читаем картинку попиксельно и записываем значения серого в двумерный массив
     pixelArray = new float[image.height, image.width];
     for (int i = 0; i < image.height; i++)
@@ -52,7 +55,7 @@ public class GenerateStringArt : MonoBehaviour
   }
   void Update()
   {
-    if (steps >= 0)
+    if (CurrentStep <= steps)
     {
       direct.Direction = activPoint;//задаем изначальные значения чтобы сравнивать
       direct.GrayScale = 1.1f;
@@ -86,7 +89,8 @@ public class GenerateStringArt : MonoBehaviour
         pixelArray[(int)pixel.x, (int)pixel.y] = Mathf.Clamp(pixelArray[(int)pixel.x, (int)pixel.y], 0f, 1f);
       }
       activPoint = endPoint;
-      steps--;
+      GetComponent<UIControl>().ProgressBar.value = CurrentStep; 
+      CurrentStep++;
     }
   }
   //метод для получения координат всех пикселей на линии между 2 пикселями
@@ -199,6 +203,10 @@ public class GenerateStringArt : MonoBehaviour
     var coords = new List<Vector2>();
 
     return coords;
+  }
+  public float ProgressBar()
+  {
+    return CurrentStep;
   }
 }
 public class Direct//класс, который хранит направление и средний уровень серого в этом направлении
