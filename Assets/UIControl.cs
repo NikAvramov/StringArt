@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static NativeGallery;
 
 public class UIControl : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class UIControl : MonoBehaviour
   public int lines;
   public float wight;
   public string shape;
+  public Texture2D image;
   void Start()
   {
 
@@ -48,5 +50,24 @@ public class UIControl : MonoBehaviour
   public void StartGeneration()
   {
     GetComponent<GenerateStringArt>().enabled = true;
+  }
+  public void GetImage()
+  {
+    Texture2D target = null;
+    var permission = GetImageFromGallery((path) =>
+    {
+      Debug.Log("Image path: " + path);
+      if (path != null)
+      {
+        Texture2D image = LoadImageAtPath(path, -1, false);
+        if (image.height == image.width)
+        {
+          image.filterMode = FilterMode.Point;
+          image.wrapMode = TextureWrapMode.Clamp; ;
+          target = image;
+        }
+      }
+    });
+    image = target;
   }
 }

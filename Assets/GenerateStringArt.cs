@@ -25,6 +25,7 @@ public class GenerateStringArt : MonoBehaviour
     steps = GetComponent<UIControl>().lines;
     width = GetComponent<UIControl>().wight;
    _ = Enum.TryParse(GetComponent<UIControl>().shape, true, out canvas);
+    image = GetComponent<UIControl>().image;
     //читаем картинку попиксельно и записываем значения серого в двумерный массив
     pixelArray = new float[image.height, image.width];
     for (int i = 0; i < image.height; i++)
