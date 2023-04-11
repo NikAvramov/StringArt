@@ -15,44 +15,12 @@ public class GenerateStringArt : MonoBehaviour
   public Texture2D image;
   public CanvasShape canvas;
 
-  private float[,] pixelArray;
-  private Vector2 activPoint;
-  private Direct direct; //вспомогательная переменная которая будет хранить напраление с наибольшим уровенем серого
+  public float[,] pixelArray;
+  public Vector2 activPoint;
+  public Direct direct; //вспомогательная переменная которая будет хранить напраление с наибольшим уровенем серого
+  public GameObject linesContainer;
   #endregion
-  void Start()
-  {
-    //инициализируем параметры генерации из слоя UI
-    countOfPoint = GetComponent<UIControl>().nodes;
-    steps = GetComponent<UIControl>().lines;
-    CurrentStep = 0;
-    width = GetComponent<UIControl>().wight;
-   _ = Enum.TryParse(GetComponent<UIControl>().shape, true, out canvas);
-    image = GetComponent<UIControl>().image;
-    size = image.width;
-    //читаем картинку попиксельно и записываем значения серого в двумерный массив
-    pixelArray = new float[image.height, image.width];
-    for (int i = 0; i < image.height; i++)
-    {
-      for (int j = 0; j < image.width; j++)
-      {
-        var color = image.GetPixel(i, j);
-        pixelArray[i, j] = color.grayscale;
-      }
-    }
-    //создаем список из точек которые является узлами по периметру
-    // в зависимости от выбранного типа холста
-    nodes = canvas switch
-    {
-      CanvasShape.Square => CreateSquareCanvas(),
-      CanvasShape.Circle => CreateCircleCanvas(),
-      CanvasShape.Triangle => CreateTriangleCanvas(),
-      CanvasShape.Hexagone => CreateHexagoneCanvas(),
-      _ => null
-    };
-    //создаем список из точек которые является узлами по периметру
-    activPoint = nodes[0];
-    direct = new Direct();//задаем изначальные значения чтобы сравнивать
-  }
+  
   void Update()
   {
     if (CurrentStep <= steps)
@@ -152,12 +120,24 @@ public class GenerateStringArt : MonoBehaviour
   public void DrawLine(Vector2 start, Vector2 end)
   {
     var line = new GameObject();
+    line.transform.SetParent(linesContainer.transform);
     var lineRender = line.AddComponent<LineRenderer>();
     lineRender.positionCount = 2;
     lineRender.startWidth = width;
     lineRender.endWidth = width;
     lineRender.material = material;
     lineRender.SetPositions(new Vector3[] { start, end });
+  }
+  public List<Vector2> CreateNodes()
+  {
+    return canvas switch
+    {
+      CanvasShape.Square => CreateSquareCanvas(),
+      CanvasShape.Circle => CreateCircleCanvas(),
+      CanvasShape.Triangle => CreateTriangleCanvas(),
+      CanvasShape.Hexagone => CreateHexagoneCanvas(),
+      _ => null
+    };
   }
   public List<Vector2> CreateSquareCanvas()//метод для создания квадратной картины
   {
@@ -203,10 +183,6 @@ public class GenerateStringArt : MonoBehaviour
     var coords = new List<Vector2>();
 
     return coords;
-  }
-  public float ProgressBar()
-  {
-    return CurrentStep;
   }
 }
 public class Direct//класс, который хранит направление и средний уровень серого в этом направлении

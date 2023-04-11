@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,7 +18,7 @@ public class UIControl : MonoBehaviour
   public Texture2D image;
   void Start()
   {
-   
+
   }
   void Update()
   {
@@ -49,9 +50,37 @@ public class UIControl : MonoBehaviour
       _ => null
     };
   }
+  public float[,] GetPixelArray()
+  {
+    var pixelArray = new float[image.height, image.width];
+    for (int i = 0; i < image.height; i++)
+    {
+      for (int j = 0; j < image.width; j++)
+      {
+        var color = image.GetPixel(i, j);
+        pixelArray[i, j] = color.grayscale;
+      }
+    }
+    return pixelArray;
+  }
   public void StartGeneration()
   {
-    GetComponent<GenerateStringArt>().enabled = true;
+    if(GetComponent<GenerateStringArt>().enabled == false)
+    {
+      GetComponent<GenerateStringArt>().countOfPoint = nodes;
+      GetComponent<GenerateStringArt>().steps = lines;
+      GetComponent<GenerateStringArt>().width = wight;
+      _ = Enum.TryParse(shape, true, out GetComponent<GenerateStringArt>().canvas);
+      GetComponent<GenerateStringArt>().image = image;
+      GetComponent<GenerateStringArt>().size = image.width;
+      GetComponent<GenerateStringArt>().pixelArray = GetPixelArray();
+      GetComponent<GenerateStringArt>().CurrentStep = 0;
+      GetComponent<GenerateStringArt>().nodes = GetComponent<GenerateStringArt>().CreateNodes();
+      GetComponent<GenerateStringArt>().activPoint = GetComponent<GenerateStringArt>().nodes[0];
+      GetComponent<GenerateStringArt>().direct = new();
+      GetComponent<GenerateStringArt>().linesContainer = new();
+      GetComponent<GenerateStringArt>().enabled = true;
+    }
   }
   public void GetImage()
   {
@@ -71,5 +100,11 @@ public class UIControl : MonoBehaviour
       }
     });
     image = target;
+  }
+  public void StopAndReset()
+  {
+    GetComponent<GenerateStringArt>().enabled = false;
+    Destroy(GetComponent<GenerateStringArt>().linesContainer);
+    ProgressBar.value = 0;
   }
 }
