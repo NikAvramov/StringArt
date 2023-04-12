@@ -17,7 +17,7 @@ public class GenerateStringArt : MonoBehaviour
   public Nodes activPoint;
   public Direct direct; //вспомогательная переменная которая будет хранить напраление с наибольшим уровенем серого
   public GameObject linesContainer;
-  public List<Nodes> Schema;
+  public List<NodesMap> Schema;
   #endregion
 
   void Update()
@@ -55,7 +55,8 @@ public class GenerateStringArt : MonoBehaviour
         //ограничиваем диапазон серого между 0 и 1
         pixelArray[(int)pixel.x, (int)pixel.y] = Mathf.Clamp(pixelArray[(int)pixel.x, (int)pixel.y], 0f, 1f);
       }
-      Schema.Add(endPoint);
+      
+      Schema.Add(new NodesMap(endPoint.ID, (int)endPoint.Coords.x, (int)endPoint.Coords.y));
       activPoint = endPoint;
       GetComponent<UIControl>().ProgressBar.value = CurrentStep;
       CurrentStep++;
@@ -208,5 +209,18 @@ public class Nodes
   {
     ID = id;
     Coords = coords;
+  }
+}
+[System.Serializable]
+public class NodesMap
+{
+  int ID;
+  int X;
+  int Y;
+  public NodesMap(int iD, int x, int y)
+  {
+    ID = iD;
+    X = x;
+    Y = y;
   }
 }

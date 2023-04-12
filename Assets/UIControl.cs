@@ -1,8 +1,11 @@
 using System;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using static NativeGallery;
+
 
 public class UIControl : MonoBehaviour
 {
@@ -62,7 +65,7 @@ public class UIControl : MonoBehaviour
   }
   public void StartGeneration()
   {
-    if(GetComponent<GenerateStringArt>().enabled == false)
+    if (GetComponent<GenerateStringArt>().enabled == false)
     {
       GetComponent<GenerateStringArt>().countOfPoint = nodes;
       GetComponent<GenerateStringArt>().steps = lines;
@@ -111,7 +114,14 @@ public class UIControl : MonoBehaviour
   }
   public void SaveSchema()
   {
-
+    if (GetComponent<GenerateStringArt>().CurrentStep >= GetComponent<GenerateStringArt>().steps && schemaName != "")
+    {
+      var path = Application.persistentDataPath + $"/{schemaName}.schema";
+      var bf = new BinaryFormatter();
+      var fs = new FileStream(path, FileMode.Create);
+      bf.Serialize(fs, GetComponent<GenerateStringArt>().Schema);
+      fs.Close();
+    }
   }
   #endregion
 }
