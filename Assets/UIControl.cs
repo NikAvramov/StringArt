@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using static NativeGallery;
@@ -9,7 +10,7 @@ using static NativeGallery;
 
 public class UIControl : MonoBehaviour
 {
-  #region Поля
+  #region РџРѕР»СЏ
   public TMP_InputField InputNodes;
   public TMP_InputField InputLines;
   public TMP_InputField InputWight;
@@ -23,7 +24,7 @@ public class UIControl : MonoBehaviour
   public string schemaName;
   public Texture2D image;
   #endregion
-  #region Методы
+  #region РњРµС‚РѕРґС‹
   public void SaveCountOfNodes()
   {
     int.TryParse(InputNodes.text.Trim(), out nodes);
@@ -94,9 +95,10 @@ public class UIControl : MonoBehaviour
         Texture2D image = LoadImageAtPath(path, -1, false);
         if (image.height == image.width)
         {
-          image.filterMode = FilterMode.Point;
-          image.wrapMode = TextureWrapMode.Clamp; ;
-          target = image;
+          var imageScale = ScaleAndCropTexture.ScaleTexture(image, 640, 640);
+          imageScale.filterMode = FilterMode.Point;
+          imageScale.wrapMode = TextureWrapMode.Clamp;
+          target = imageScale;
         }
       }
     });
