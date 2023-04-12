@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using static NativeGallery;
@@ -16,6 +15,8 @@ public class UIControl : MonoBehaviour
   public TMP_InputField InputWight;
   public TMP_InputField InputSchemaName;
   public Slider ProgressBar;
+  public GameObject picPrefab;
+  public GameObject picture;
 
   public int nodes;
   public int lines;
@@ -66,7 +67,7 @@ public class UIControl : MonoBehaviour
   }
   public void StartGeneration()
   {
-    if (GetComponent<GenerateStringArt>().enabled == false)
+    if (GetComponent<GenerateStringArt>().enabled == false && image != null)
     {
       GetComponent<GenerateStringArt>().countOfPoint = nodes;
       GetComponent<GenerateStringArt>().steps = lines;
@@ -81,28 +82,35 @@ public class UIControl : MonoBehaviour
       GetComponent<GenerateStringArt>().direct = new();
       GetComponent<GenerateStringArt>().linesContainer = new();
       GetComponent<GenerateStringArt>().Schema = new();
+
+      Destroy(picture);
       GetComponent<GenerateStringArt>().enabled = true;
     }
   }
   public void GetImage()
   {
-    Texture2D target = null;
+    Destroy(picture);
+    image = null;
     var permission = GetImageFromGallery((path) =>
     {
-      Debug.Log("Image path: " + path);
       if (path != null)
       {
-        Texture2D image = LoadImageAtPath(path, -1, false);
-        if (image.height == image.width)
+        Texture2D img = LoadImageAtPath(path, -1, false);
+        if (img.height == img.width)
         {
-          var imageScale = ScaleAndCropTexture.ScaleTexture(image, 640, 640);
+          var imageScale = ScaleAndCropTexture.ScaleTexture(img, 640, 640);
           imageScale.filterMode = FilterMode.Point;
           imageScale.wrapMode = TextureWrapMode.Clamp;
-          target = imageScale;
+          image = imageScale;
+          SetQuad();
         }
       }
     });
-    image = target;
+  }
+  public void SetQuad()
+  {
+    picture = Instantiate(picPrefab);
+    picture.GetComponent<Renderer>().sharedMaterial.mainTexture = image;
   }
   public void StopAndReset()
   {
