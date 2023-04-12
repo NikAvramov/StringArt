@@ -6,24 +6,21 @@ using static NativeGallery;
 
 public class UIControl : MonoBehaviour
 {
+  #region Поля
   public TMP_InputField InputNodes;
   public TMP_InputField InputLines;
   public TMP_InputField InputWight;
+  public TMP_InputField InputSchemaName;
   public Slider ProgressBar;
 
   public int nodes;
   public int lines;
   public float wight;
   public string shape;
+  public string schemaName;
   public Texture2D image;
-  void Start()
-  {
-
-  }
-  void Update()
-  {
-
-  }
+  #endregion
+  #region Методы
   public void SaveCountOfNodes()
   {
     int.TryParse(InputNodes.text.Trim(), out nodes);
@@ -79,6 +76,7 @@ public class UIControl : MonoBehaviour
       GetComponent<GenerateStringArt>().activPoint = GetComponent<GenerateStringArt>().nodes[0];
       GetComponent<GenerateStringArt>().direct = new();
       GetComponent<GenerateStringArt>().linesContainer = new();
+      GetComponent<GenerateStringArt>().Schema = new();
       GetComponent<GenerateStringArt>().enabled = true;
     }
   }
@@ -107,4 +105,13 @@ public class UIControl : MonoBehaviour
     Destroy(GetComponent<GenerateStringArt>().linesContainer);
     ProgressBar.value = 0;
   }
+  public void SaveSchemaName()
+  {
+    schemaName = InputSchemaName.text.Trim();
+  }
+  public void SaveSchema()
+  {
+
+  }
+  #endregion
 }

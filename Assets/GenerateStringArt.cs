@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,16 +10,16 @@ public class GenerateStringArt : MonoBehaviour
   public Material material;
   public int steps;
   public int CurrentStep { get; set; }
-  public List<Vector2> nodes;
+  public List<Nodes> nodes;
   public Texture2D image;
   public CanvasShape canvas;
-
   public float[,] pixelArray;
-  public Vector2 activPoint;
+  public Nodes activPoint;
   public Direct direct; //вспомогательная переменная которая будет хранить напраление с наибольшим уровенем серого
   public GameObject linesContainer;
+  public List<Nodes> Schema;
   #endregion
-  
+
   void Update()
   {
     if (CurrentStep <= steps)
@@ -32,7 +31,7 @@ public class GenerateStringArt : MonoBehaviour
       {
         if (nodes[j] != activPoint)
         {
-          var linePixel = GetAllPixelInLine(activPoint, nodes[j]);
+          var linePixel = GetAllPixelInLine(activPoint.Coords, nodes[j].Coords);
           float sumGrayScale = 0f;
           foreach (var pixel in linePixel)
           {
@@ -48,7 +47,7 @@ public class GenerateStringArt : MonoBehaviour
         }
       }
       var endPoint = direct.Direction;
-      DrawLine(activPoint, endPoint);
+      DrawLine(activPoint.Coords, endPoint.Coords);
 
       foreach (var pixel in direct.PixelsInLine)
       {
@@ -56,8 +55,9 @@ public class GenerateStringArt : MonoBehaviour
         //ограничиваем диапазон серого между 0 и 1
         pixelArray[(int)pixel.x, (int)pixel.y] = Mathf.Clamp(pixelArray[(int)pixel.x, (int)pixel.y], 0f, 1f);
       }
+      Schema.Add(endPoint);
       activPoint = endPoint;
-      GetComponent<UIControl>().ProgressBar.value = CurrentStep; 
+      GetComponent<UIControl>().ProgressBar.value = CurrentStep;
       CurrentStep++;
     }
   }
@@ -128,7 +128,7 @@ public class GenerateStringArt : MonoBehaviour
     lineRender.material = material;
     lineRender.SetPositions(new Vector3[] { start, end });
   }
-  public List<Vector2> CreateNodes()
+  public List<Nodes> CreateNodes()
   {
     return canvas switch
     {
@@ -139,48 +139,49 @@ public class GenerateStringArt : MonoBehaviour
       _ => null
     };
   }
-  public List<Vector2> CreateSquareCanvas()//метод для создания квадратной картины
+  public List<Nodes> CreateSquareCanvas()//метод для создания квадратной картины
   {
-    var coords = new List<Vector2>();
+    var coords = new List<Nodes>();
     int countNodeInSide = countOfPoint / 4;
     int delta = size / countNodeInSide;
     for (int i = 0; i < countNodeInSide; i++)
     {
-      coords.Add(new Vector2(0, i * delta));
-      coords.Add(new Vector2(i * delta, size - 1));
-      coords.Add(new Vector2(size - 1, size - i * delta - 1));
-      coords.Add(new Vector2(size - i * delta - 1, 0));
+      coords.Add(new Nodes(i, new Vector2(0, i * delta)));
+      coords.Add((new Nodes(i + countNodeInSide, new Vector2(i * delta, size - 1))));
+      coords.Add((new Nodes(i + 2 * countNodeInSide, new Vector2(size - 1, size - i * delta - 1))));
+      coords.Add((new Nodes(i + 3 * countNodeInSide, new Vector2(size - i * delta - 1, 0))));
     }
     return coords;
   }
-  public List<Vector2> CreateCircleCanvas()//метод для создания круглой картины
+  public List<Nodes> CreateCircleCanvas()//метод для создания круглой картины
   {
-    var coords = new List<Vector2>();
+    var coords = new List<Nodes>();
     var deltaFi = 360f / countOfPoint;//шаг углового расстояния между двумя соседними точками
     for (int i = 0; i < countOfPoint; i++)
     {
-      float fi = 0 + i * deltaFi;//текущий угол(полярная координата)
+      float fi = i * deltaFi;//текущий угол в грпдусах(полярная координата)
+      float fiRad = fi * Mathf.PI / 180;
       float r = (float)size / 2;
 
-      float x = r * Mathf.Cos(fi) + r;
+      float x = r * Mathf.Cos(fiRad) + r;
       x = Mathf.Clamp(x, 0, size - 1);
       x = Mathf.Round(x);
-      float y = r * Mathf.Sin(fi) + r;
+      float y = r * Mathf.Sin(fiRad) + r;
       y = Mathf.Clamp(y, 0, size - 1);
       y = Mathf.Round(y);
-      coords.Add(new Vector2(x, y));
+      coords.Add(new Nodes(i, new Vector2(x, y)));
     }
     return coords;
   }
-  public List<Vector2> CreateTriangleCanvas()//метод для создания треугольной картины
+  public List<Nodes> CreateTriangleCanvas()//метод для создания треугольной картины
   {
-    var coords = new List<Vector2>();
+    var coords = new List<Nodes>();
 
     return coords;
   }
-  public List<Vector2> CreateHexagoneCanvas()//метод для создания шестиугольной картины
+  public List<Nodes> CreateHexagoneCanvas()//метод для создания шестиугольной картины
   {
-    var coords = new List<Vector2>();
+    var coords = new List<Nodes>();
 
     return coords;
   }
@@ -188,7 +189,7 @@ public class GenerateStringArt : MonoBehaviour
 public class Direct//класс, который хранит направление и средний уровень серого в этом направлении
 {
   public float GrayScale { get; set; }
-  public Vector2 Direction { get; set; }
+  public Nodes Direction { get; set; }
   public List<Vector2> PixelsInLine { get; set; }
 }
 public enum CanvasShape
@@ -197,4 +198,15 @@ public enum CanvasShape
   Circle,
   Triangle,
   Hexagone,
+}
+public class Nodes
+{
+  public int ID;
+  public Vector2 Coords;
+
+  public Nodes(int id, Vector2 coords)
+  {
+    ID = id;
+    Coords = coords;
+  }
 }
