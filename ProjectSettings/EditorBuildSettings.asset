@@ -6,6 +6,15 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: c912a5d9258b42f428525f46d96118c8
+  - enabled: 1
     path: Assets/Scenes/RendererScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/SchemaMenu.unity
+    guid: 65c639da64ec26849a69be521db2d1db
+  - enabled: 1
+    path: Assets/Scenes/StepWeaving.unity
+    guid: 3d6ead628a3fd0e49b2847b3468b2ccd
   m_configObjects: {}

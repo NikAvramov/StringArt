@@ -3,9 +3,9 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static NativeGallery;
-
 
 public class UIControl : MonoBehaviour
 {
@@ -89,6 +89,7 @@ public class UIControl : MonoBehaviour
   }
   public void GetImage()
   {
+    StopAndReset();
     Destroy(picture);
     image = null;
     var permission = GetImageFromGallery((path) =>
@@ -127,11 +128,23 @@ public class UIControl : MonoBehaviour
     if (GetComponent<GenerateStringArt>().CurrentStep >= GetComponent<GenerateStringArt>().steps && schemaName != "")
     {
       var path = Application.persistentDataPath + $"/{schemaName}.schema";
+      if (File.Exists(path))
+      {
+        File.Delete(path);
+      }
+      using var fs = new FileStream(path, FileMode.OpenOrCreate);
       var bf = new BinaryFormatter();
-      var fs = new FileStream(path, FileMode.Create);
       bf.Serialize(fs, GetComponent<GenerateStringArt>().Schema);
-      fs.Close();
+
     }
+  }
+  public void LoadMainMenu()
+  {
+    SceneManager.LoadScene(0);
+  }
+  public void LoadListShema()
+  {
+    SceneManager.LoadScene(2);
   }
   #endregion
 }
