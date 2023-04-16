@@ -55,8 +55,8 @@ public class GenerateStringArt : MonoBehaviour
         //ограничиваем диапазон серого между 0 и 1
         pixelArray[(int)pixel.x, (int)pixel.y] = Mathf.Clamp(pixelArray[(int)pixel.x, (int)pixel.y], 0f, 1f);
       }
-      
-      Schema.Add(new NodesMap(endPoint.ID, (int)endPoint.Coords.x, (int)endPoint.Coords.y));
+
+      Schema.Add(new NodesMap(CurrentStep,endPoint.ID, width, (int)endPoint.Coords.x, (int)endPoint.Coords.y));
       activPoint = endPoint;
       GetComponent<UIControl>().ProgressBar.value = CurrentStep;
       CurrentStep++;
@@ -214,15 +214,23 @@ public class Nodes
 [System.Serializable]
 public class NodesMap
 {
-  public int ID;
+  public int IDstep;
+  public int IDnode;
+  public float Width;
   public int X;
   public int Y;
   public bool IsReady;
-  public NodesMap(int iD, int x, int y)
+  public NodesMap(int iDstep, int idnode, float width, int x, int y)
   {
-    ID = iD;
+    IDstep = iDstep;
+    IDnode = idnode;
+    Width = width;
     X = x;
     Y = y;
     IsReady = false;
+  }
+  public override string ToString()
+  {
+    return $"Номер шага {IDstep}, номер гвоздя {IDnode}, Х = {X}, Y = {Y}, статус шага - {IsReady}";
   }
 }

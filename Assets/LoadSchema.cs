@@ -11,7 +11,9 @@ public class LoadSchema : MonoBehaviour
   {
     string name = transform.name;
     link.GetComponent<StepWeavingUIControl>().nodes = link.GetComponent<ListSchemaUIControl>().Schemas[name];
+    link.GetComponent<StepWeavingUIControl>().schemaName.text = name;
     link.GetComponent<ListSchemaUIControl>().menu.enabled = false;
     link.GetComponent<ListSchemaUIControl>().workpace.enabled = true;
+    link.GetComponent<StepWeavingUIControl>().enabled = true;
   }
 }
