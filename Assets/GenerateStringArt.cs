@@ -214,13 +214,15 @@ public class Nodes
 [System.Serializable]
 public class NodesMap
 {
-  int ID;
-  int X;
-  int Y;
+  public int ID;
+  public int X;
+  public int Y;
+  public bool IsReady;
   public NodesMap(int iD, int x, int y)
   {
     ID = iD;
     X = x;
     Y = y;
+    IsReady = false;
   }
 }
