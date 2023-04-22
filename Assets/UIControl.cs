@@ -15,16 +15,23 @@ public class UIControl : MonoBehaviour
   public TMP_InputField InputWight;
   public TMP_InputField InputSchemaName;
   public Slider ProgressBar;
-  public GameObject picPrefab;
-  public GameObject picture;
+
+  public Button startButton;
+  public Sprite activButtonImage;
+  public Texture2D defaultTexture;
+  public Sprite defaultButtonImage;
+
+  public Canvas menu;
+  public Canvas workpace;
 
   public int nodes;
   public int lines;
   public float wight;
-  public string shape;
+  public CanvasShape shape;
   public string schemaName;
   public Texture2D image;
   #endregion
+  
   #region Методы
   public void SaveCountOfNodes()
   {
@@ -45,11 +52,11 @@ public class UIControl : MonoBehaviour
   {
     shape = i switch
     {
-      0 => "Square",
-      1 => "Circle",
-      2 => "Triangle",
-      3 => "Hexagone",
-      _ => null
+      0 => CanvasShape.Square,
+      1 => CanvasShape.Circle,
+      2 => CanvasShape.Triangle,
+      3 => CanvasShape.Hexagone,
+      _ => CanvasShape.Square
     };
   }
   public float[,] GetPixelArray()
@@ -72,7 +79,7 @@ public class UIControl : MonoBehaviour
       GetComponent<GenerateStringArt>().countOfPoint = nodes;
       GetComponent<GenerateStringArt>().steps = lines;
       GetComponent<GenerateStringArt>().width = wight;
-      _ = Enum.TryParse(shape, true, out GetComponent<GenerateStringArt>().canvas);
+      GetComponent<GenerateStringArt>().canvas = shape;
       GetComponent<GenerateStringArt>().image = image;
       GetComponent<GenerateStringArt>().size = image.width;
       GetComponent<GenerateStringArt>().pixelArray = GetPixelArray();
@@ -83,15 +90,15 @@ public class UIControl : MonoBehaviour
       GetComponent<GenerateStringArt>().linesContainer = new();
       GetComponent<GenerateStringArt>().Schema = new();
 
-      Destroy(picture);
+      menu.enabled = false;
+      workpace.enabled = true;
       GetComponent<GenerateStringArt>().enabled = true;
     }
   }
   public void GetImage()
   {
-    StopAndReset();
-    Destroy(picture);
     image = null;
+    //startButton.GetComponent<Image>().sprite = 
     var permission = GetImageFromGallery((path) =>
     {
       if (path != null)
@@ -103,21 +110,22 @@ public class UIControl : MonoBehaviour
           imageScale.filterMode = FilterMode.Point;
           imageScale.wrapMode = TextureWrapMode.Clamp;
           image = imageScale;
-          SetQuad();
+          
+          Rect rect = new(0, 0, image.width, image.height);
+          activButtonImage = Sprite.Create(image, rect, new Vector2(0.5f, 0.5f));
+          startButton.GetComponent<Image>().sprite = activButtonImage;
         }
       }
     });
-  }
-  public void SetQuad()
-  {
-    picture = Instantiate(picPrefab);
-    picture.GetComponent<Renderer>().sharedMaterial.mainTexture = image;
   }
   public void StopAndReset()
   {
     GetComponent<GenerateStringArt>().enabled = false;
     Destroy(GetComponent<GenerateStringArt>().linesContainer);
     ProgressBar.value = 0;
+    menu.enabled = true;
+    workpace.enabled = false;
+
   }
   public void SaveSchemaName()
   {
