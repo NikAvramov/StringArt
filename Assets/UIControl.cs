@@ -21,6 +21,8 @@ public class UIControl : MonoBehaviour
   public Sprite activButtonImage;
   public Texture2D defaultTexture;
   public Sprite defaultButtonImage;
+  public GameObject message;
+  public GameObject messageParent;
 
   public Canvas menu;
   public Canvas workpace;
@@ -144,7 +146,8 @@ public class UIControl : MonoBehaviour
       using var fs = new FileStream(path, FileMode.OpenOrCreate);
       var bf = new BinaryFormatter();
       bf.Serialize(fs, GetComponent<GenerateStringArt>().Schema);
-
+      var mes = Instantiate(message, messageParent.transform);
+      Destroy(mes, 1);
     }
   }
   public void LoadMainMenu()

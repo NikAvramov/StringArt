@@ -1756,6 +1756,8 @@ MonoBehaviour:
   activButtonImage: {fileID: 0}
   defaultTexture: {fileID: 2800000, guid: fadf37b47b57018409a751f3c4b10d92, type: 3}
   defaultButtonImage: {fileID: 0}
+  message: {fileID: 6198964972400388441, guid: dc35b35e6173b1e4a8d3078a9e791b99, type: 3}
+  messageParent: {fileID: 709533100}
   menu: {fileID: 2147252020}
   workpace: {fileID: 1136262666}
   nodes: 0
@@ -6844,7 +6846,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.57152385}
   m_AnchorMax: {x: 1, y: 0.7517725}
-  m_AnchoredPosition: {x: 0.1736145, y: -1}
+  m_AnchoredPosition: {x: 0.17358398, y: -1}
   m_SizeDelta: {x: -1.4769974, y: 3.2834015}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2023531280
