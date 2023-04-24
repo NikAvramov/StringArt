@@ -14,6 +14,7 @@ public class UIControl : MonoBehaviour
   public TMP_InputField InputLines;
   public TMP_InputField InputWight;
   public TMP_InputField InputSchemaName;
+  //public TMP_Dropdown ShapeDropdown;
   public Slider ProgressBar;
 
   public Button startButton;
@@ -48,9 +49,9 @@ public class UIControl : MonoBehaviour
     float.TryParse(InputWight.text.Trim(), out wight);
     wight = Mathf.Clamp01(wight / 100);
   }
-  public void SaveShapeCanvas(int i)
+  public void SaveShapeCanvas(TMP_Dropdown shapeDropdown)
   {
-    shape = i switch
+    shape = shapeDropdown.value switch
     {
       0 => CanvasShape.Square,
       1 => CanvasShape.Circle,

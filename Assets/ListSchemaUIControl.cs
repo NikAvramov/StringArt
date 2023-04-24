@@ -33,8 +33,6 @@ public class ListSchemaUIControl : MonoBehaviour
       var but = Instantiate(buttonPrefab, parentForButton);
       but.name = name;
 
-      //but.onClick.AddListener(GetComponent<LoadSchema>().LoadSchemaWithName);
-
       var buttonText = Instantiate(buttonTextPrefab, but.transform);
       buttonText.text = name;
     }
@@ -46,6 +44,10 @@ public class ListSchemaUIControl : MonoBehaviour
   public void LoadStartGeneration()
   {
     SceneManager.LoadScene(1);
+  }
+  public void LoadListShema()
+  {
+    SceneManager.LoadScene(2);
   }
 
 }
