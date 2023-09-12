@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -30,6 +31,7 @@ public class UIControl : MonoBehaviour
   public int nodes;
   public int lines;
   public float wight;
+  private bool verifiInputUser = true;
   public CanvasShape shape;
   public string schemaName;
   public Texture2D image;
@@ -38,18 +40,77 @@ public class UIControl : MonoBehaviour
   #region Методы
   public void SaveCountOfNodes()
   {
-    int.TryParse(InputNodes.text.Trim(), out nodes);
+    bool result = int.TryParse(InputNodes.text.Trim(), out int inputUser);
+    if (result) 
+    {
+      verifiInputUser = true;
+      if(inputUser > 500)
+      {
+        nodes = 500;
+      }
+      else if(inputUser < 100)
+      { 
+        nodes = 100;
+      }
+      else
+      {
+        nodes = inputUser;
+      }
+    }
+    else
+    {
+      verifiInputUser = false;
+    }
   }
   public void SaveCountOfLines()
   {
-    int.TryParse(InputLines.text.Trim(), out lines);
+    bool result = int.TryParse(InputLines.text.Trim(), out int inputUser);
+    if (result)
+    {
+      verifiInputUser = true;
+      if (inputUser > 10000)
+      {
+        lines = 10000;
+      }
+      else if (inputUser < 500)
+      {
+        lines = 500;
+      }
+      else
+      {
+        lines = inputUser;
+      }
+    }
+    else
+    { 
+      verifiInputUser = false;
+    }
     ProgressBar.minValue = 0;
     ProgressBar.maxValue = lines;
   }
   public void SaveWight()
   {
-    float.TryParse(InputWight.text.Trim(), out wight);
-    wight = Mathf.Clamp01(wight / 100);
+    bool result = float.TryParse(InputWight.text.Trim(), out float inputUser);
+    if (result)
+    {
+      verifiInputUser = true;
+      if (inputUser >= 100f)
+      {
+        wight = 1f;
+      }
+      else if (inputUser <= 1f)
+      {
+        wight = 0.01f;
+      }
+      else
+      {
+        wight = Mathf.Clamp01(inputUser / 100f);
+      }
+    }
+    else
+    { 
+      verifiInputUser = false; 
+    }
   }
   public void SaveShapeCanvas(TMP_Dropdown shapeDropdown)
   {
@@ -77,7 +138,7 @@ public class UIControl : MonoBehaviour
   }
   public void StartGeneration()
   {
-    if (GetComponent<GenerateStringArt>().enabled == false && image != null)
+    if (GetComponent<GenerateStringArt>().enabled == false && image != null && verifiInputUser)
     {
       GetComponent<GenerateStringArt>().countOfPoint = nodes;
       GetComponent<GenerateStringArt>().steps = lines;
@@ -132,11 +193,15 @@ public class UIControl : MonoBehaviour
   }
   public void SaveSchemaName()
   {
-    schemaName = InputSchemaName.text.Trim();
+    string inputUser = InputSchemaName.text.Trim();
+    if(inputUser.Length <= 20 && !string.IsNullOrEmpty(inputUser))
+    {
+      schemaName = inputUser;
+    }
   }
   public void SaveSchema()
   {
-    if (GetComponent<GenerateStringArt>().CurrentStep >= GetComponent<GenerateStringArt>().steps && schemaName != "")
+    if (GetComponent<GenerateStringArt>().CurrentStep >= GetComponent<GenerateStringArt>().steps && !string.IsNullOrEmpty(schemaName))
     {
       var path = Application.persistentDataPath + $"/{schemaName}.schema";
       if (File.Exists(path))
@@ -146,8 +211,12 @@ public class UIControl : MonoBehaviour
       using var fs = new FileStream(path, FileMode.OpenOrCreate);
       var bf = new BinaryFormatter();
       bf.Serialize(fs, GetComponent<GenerateStringArt>().Schema);
+
+      SavePreView();
+
       var mes = Instantiate(message, messageParent.transform);
       Destroy(mes, 1);
+      schemaName = null;
     }
   }
   public void LoadMainMenu()
@@ -157,6 +226,12 @@ public class UIControl : MonoBehaviour
   public void LoadListShema()
   {
     SceneManager.LoadScene(2);
+  }
+  private void SavePreView()
+  {
+    var path = Application.persistentDataPath + $"/{schemaName}.png";
+    ScreenCapture.CaptureScreenshot(path);
+    Debug.Log(path);
   }
   #endregion
 }
