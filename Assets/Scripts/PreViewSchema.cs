@@ -1,5 +1,4 @@
 using System.IO;
-using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.UI;
 using static NativeGallery;
@@ -20,7 +19,6 @@ public class PreViewSchema : MonoBehaviour
     var path = Path.Combine(Application.persistentDataPath, filename);
     if (File.Exists(path))
     {
-      Debug.Log($"файл с именем {transform.name}.png существует");
       Texture2D texture = LoadImageAtPath(path, -1, false);
       var img = Instantiate(imgPrefab, ingParent.transform);
 

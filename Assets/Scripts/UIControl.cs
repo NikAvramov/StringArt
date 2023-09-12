@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Threading;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -229,9 +228,13 @@ public class UIControl : MonoBehaviour
   }
   private void SavePreView()
   {
-    var path = Application.persistentDataPath + $"/{schemaName}.png";
-    ScreenCapture.CaptureScreenshot(path);
-    Debug.Log(path);
+    string filename = $"{schemaName}.png";
+    var path = Path.Combine(Application.persistentDataPath, filename);
+
+    if (Application.platform == RuntimePlatform.Android)
+      ScreenCapture.CaptureScreenshot(filename);
+    else if (Application.platform == RuntimePlatform.WindowsEditor)
+      ScreenCapture.CaptureScreenshot(path);
   }
   #endregion
 }
