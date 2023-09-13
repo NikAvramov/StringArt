@@ -13,6 +13,7 @@ public class UIControl : MonoBehaviour
   public TMP_InputField InputNodes;
   public TMP_InputField InputLines;
   public TMP_InputField InputWight;
+  public TMP_InputField InputSize;
   public TMP_InputField InputSchemaName;
   //public TMP_Dropdown ShapeDropdown;
   public Slider ProgressBar;
@@ -30,6 +31,7 @@ public class UIControl : MonoBehaviour
   public int nodes;
   public int lines;
   public float wight;
+  public int size;
   private bool verifiInputUser = true;
   public CanvasShape shape;
   public string schemaName;
@@ -89,26 +91,51 @@ public class UIControl : MonoBehaviour
   }
   public void SaveWight()
   {
-    bool result = float.TryParse(InputWight.text.Trim(), out float inputUser);
+    var verifiString = InputWight.text.Trim().Replace('.', ',');
+    bool result = float.TryParse(verifiString, out float inputUser);
     if (result)
     {
       verifiInputUser = true;
-      if (inputUser >= 100f)
+      if (inputUser >= 1f)
       {
         wight = 1f;
       }
-      else if (inputUser <= 1f)
+      else if (inputUser <= 0.01f)
       {
         wight = 0.01f;
       }
       else
       {
-        wight = Mathf.Clamp01(inputUser / 100f);
+        wight = inputUser;
       }
     }
     else
     { 
       verifiInputUser = false; 
+    }
+  }
+  public void SaveSize()
+  {
+    bool result = int.TryParse(InputSize.text.Trim(), out int inputUser);
+    if (result)
+    {
+      verifiInputUser = true;
+      if (inputUser > 1500)
+      {
+        size = 1500;
+      }
+      else if (inputUser < 150)
+      {
+        size = 150;
+      }
+      else
+      {
+        size = inputUser;
+      }
+    }
+    else
+    {
+      verifiInputUser = false;
     }
   }
   public void SaveShapeCanvas(TMP_Dropdown shapeDropdown)
@@ -141,7 +168,7 @@ public class UIControl : MonoBehaviour
     {
       GetComponent<GenerateStringArt>().countOfPoint = nodes;
       GetComponent<GenerateStringArt>().steps = lines;
-      GetComponent<GenerateStringArt>().width = wight;
+      GetComponent<GenerateStringArt>().width = (640 * wight) / size;
       GetComponent<GenerateStringArt>().canvas = shape;
       GetComponent<GenerateStringArt>().image = image;
       GetComponent<GenerateStringArt>().size = image.width;
