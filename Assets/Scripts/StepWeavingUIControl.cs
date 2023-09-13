@@ -14,6 +14,8 @@ public class StepWeavingUIControl : MonoBehaviour
   public TMP_Text node;
   public TMP_Text nextNode;
   public TMP_Text schemaName;
+  public GameObject message;
+  public GameObject messageParent;
 
   public float widthLine;
   public Material material;
@@ -34,7 +36,7 @@ public class StepWeavingUIControl : MonoBehaviour
 
     currentNode = nodes[0];
     int i = 0;
-    while(currentNode.IsReady == true && i != nodes.Count - 1) 
+    while (currentNode.IsReady == true && i != nodes.Count - 1)
     {
       i++;
       DrawLine();
@@ -43,7 +45,7 @@ public class StepWeavingUIControl : MonoBehaviour
 
 
     //currentNode = nodes.FirstOrDefault(n => n.IsReady == false);
-  
+
     step.text = (currentNode.IDstep + 1).ToString();
     node.text = currentNode.IDnode.ToString();
     nextNode.text = nodes.FirstOrDefault(n => n.IDstep == currentNode.IDstep + 1).IDnode.ToString();
@@ -114,5 +116,8 @@ public class StepWeavingUIControl : MonoBehaviour
     using var fs = new FileStream(path, FileMode.OpenOrCreate);
     var bf = new BinaryFormatter();
     bf.Serialize(fs, nodes);
+
+    var mes = Instantiate(message, messageParent.transform);
+    Destroy(mes, 1);
   }
 }

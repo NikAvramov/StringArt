@@ -13,13 +13,17 @@ public class UIControl : MonoBehaviour
   public TMP_InputField InputNodes;
   public TMP_InputField InputLines;
   public TMP_InputField InputWight;
+  public TMP_InputField InputSize;
   public TMP_InputField InputSchemaName;
+  //public TMP_Dropdown ShapeDropdown;
   public Slider ProgressBar;
 
   public Button startButton;
   public Sprite activButtonImage;
   public Texture2D defaultTexture;
   public Sprite defaultButtonImage;
+  public GameObject message;
+  public GameObject messageParent;
 
   public Canvas menu;
   public Canvas workpace;
@@ -27,6 +31,8 @@ public class UIControl : MonoBehaviour
   public int nodes;
   public int lines;
   public float wight;
+  public int size;
+  private bool verifiInputUser = true;
   public CanvasShape shape;
   public string schemaName;
   public Texture2D image;
@@ -35,22 +41,106 @@ public class UIControl : MonoBehaviour
   #region Методы
   public void SaveCountOfNodes()
   {
-    int.TryParse(InputNodes.text.Trim(), out nodes);
+    bool result = int.TryParse(InputNodes.text.Trim(), out int inputUser);
+    if (result) 
+    {
+      verifiInputUser = true;
+      if(inputUser > 500)
+      {
+        nodes = 500;
+      }
+      else if(inputUser < 100)
+      { 
+        nodes = 100;
+      }
+      else
+      {
+        nodes = inputUser;
+      }
+    }
+    else
+    {
+      verifiInputUser = false;
+    }
   }
   public void SaveCountOfLines()
   {
-    int.TryParse(InputLines.text.Trim(), out lines);
+    bool result = int.TryParse(InputLines.text.Trim(), out int inputUser);
+    if (result)
+    {
+      verifiInputUser = true;
+      if (inputUser > 10000)
+      {
+        lines = 10000;
+      }
+      else if (inputUser < 500)
+      {
+        lines = 500;
+      }
+      else
+      {
+        lines = inputUser;
+      }
+    }
+    else
+    { 
+      verifiInputUser = false;
+    }
     ProgressBar.minValue = 0;
     ProgressBar.maxValue = lines;
   }
   public void SaveWight()
   {
-    float.TryParse(InputWight.text.Trim(), out wight);
-    wight = Mathf.Clamp01(wight / 100);
+    var verifiString = InputWight.text.Trim().Replace('.', ',');
+    bool result = float.TryParse(verifiString, out float inputUser);
+    if (result)
+    {
+      verifiInputUser = true;
+      if (inputUser >= 1f)
+      {
+        wight = 1f;
+      }
+      else if (inputUser <= 0.01f)
+      {
+        wight = 0.01f;
+      }
+      else
+      {
+        wight = inputUser;
+      }
+    }
+    else
+    { 
+      verifiInputUser = false; 
+    }
   }
-  public void SaveShapeCanvas(int i)
+  public void SaveSize()
   {
-    shape = i switch
+    bool result = int.TryParse(InputSize.text.Trim(), out int inputUser);
+    if (result)
+    {
+      verifiInputUser = true;
+      if (inputUser > 1500)
+      {
+        size = 1500;
+      }
+      else if (inputUser < 150)
+      {
+        size = 150;
+      }
+      else
+      {
+        size = inputUser;
+      }
+    }
+    else
+    {
+      verifiInputUser = false;
+    }
+  }
+  public void SaveShapeCanvas(TMP_Dropdown shapeDropdown)
+  {
+    shape = shapeDropdown.value switch
     {
       0 => CanvasShape.Square,
       1 => CanvasShape.Circle,
@@ -74,11 +164,11 @@ public class UIControl : MonoBehaviour
   }
   public void StartGeneration()
   {
-    if (GetComponent<GenerateStringArt>().enabled == false && image != null)
+    if (GetComponent<GenerateStringArt>().enabled == false && image != null && verifiInputUser)
     {
       GetComponent<GenerateStringArt>().countOfPoint = nodes;
       GetComponent<GenerateStringArt>().steps = lines;
-      GetComponent<GenerateStringArt>().width = wight;
+      GetComponent<GenerateStringArt>().width = (640 * wight) / size;
       GetComponent<GenerateStringArt>().canvas = shape;
       GetComponent<GenerateStringArt>().image = image;
       GetComponent<GenerateStringArt>().size = image.width;
@@ -129,11 +219,15 @@ public class UIControl : MonoBehaviour
   }
   public void SaveSchemaName()
   {
-    schemaName = InputSchemaName.text.Trim();
+    string inputUser = InputSchemaName.text.Trim();
+    if(inputUser.Length <= 20 && !string.IsNullOrEmpty(inputUser))
+    {
+      schemaName = inputUser;
+    }
   }
   public void SaveSchema()
   {
-    if (GetComponent<GenerateStringArt>().CurrentStep >= GetComponent<GenerateStringArt>().steps && schemaName != "")
+    if (GetComponent<GenerateStringArt>().CurrentStep >= GetComponent<GenerateStringArt>().steps && !string.IsNullOrEmpty(schemaName))
     {
       var path = Application.persistentDataPath + $"/{schemaName}.schema";
       if (File.Exists(path))
@@ -144,6 +238,11 @@ public class UIControl : MonoBehaviour
       var bf = new BinaryFormatter();
       bf.Serialize(fs, GetComponent<GenerateStringArt>().Schema);
 
+      SavePreView();
+
+      var mes = Instantiate(message, messageParent.transform);
+      Destroy(mes, 1);
+      schemaName = null;
     }
   }
   public void LoadMainMenu()
@@ -153,6 +252,16 @@ public class UIControl : MonoBehaviour
   public void LoadListShema()
   {
     SceneManager.LoadScene(2);
+  }
+  private void SavePreView()
+  {
+    string filename = $"{schemaName}.png";
+    var path = Path.Combine(Application.persistentDataPath, filename);
+
+    if (Application.platform == RuntimePlatform.Android)
+      ScreenCapture.CaptureScreenshot(filename);
+    else if (Application.platform == RuntimePlatform.WindowsEditor)
+      ScreenCapture.CaptureScreenshot(path);
   }
   #endregion
 }

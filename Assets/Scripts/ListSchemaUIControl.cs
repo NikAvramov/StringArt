@@ -4,15 +4,17 @@ using System.Runtime.Serialization.Formatters.Binary;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class ListSchemaUIControl : MonoBehaviour
 {
   public Dictionary<string, List<NodesMap>> Schemas;
 
-  public UnityEngine.UI.Button buttonPrefab;
+  //public UnityEngine.UI.Button buttonPrefab;
   public Transform parentForButton;
   public TMP_Text buttonTextPrefab;
-
+  public Image buttonLinePrefab;
+  public GameObject messageParent;
   public Canvas menu;
   public Canvas workpace;
   void Start()
@@ -30,13 +32,17 @@ public class ListSchemaUIControl : MonoBehaviour
       var name = files[i].Name.Replace(".schema", string.Empty);
       Schemas.Add(name, schema);
 
-      var but = Instantiate(buttonPrefab, parentForButton);
-      but.name = name;
+      var butLine = Instantiate(buttonLinePrefab, parentForButton);
+      var a  = butLine.GetComponentsInChildren<Button>();
+      Button preview = a[0];
+      Button schemaNane = a[1];
+      Button delete = a[2];
 
-      //but.onClick.AddListener(GetComponent<LoadSchema>().LoadSchemaWithName);
-
-      var buttonText = Instantiate(buttonTextPrefab, but.transform);
-      buttonText.text = name;
+      preview.name = name;
+      delete.name = name;
+      schemaNane.name = name;
+      var schemaNaneText = Instantiate(buttonTextPrefab, schemaNane.transform);
+      schemaNaneText.text = name;
     }
   }
   public void LoadMainMenu()
@@ -46,6 +52,10 @@ public class ListSchemaUIControl : MonoBehaviour
   public void LoadStartGeneration()
   {
     SceneManager.LoadScene(1);
+  }
+  public void LoadListShema()
+  {
+    SceneManager.LoadScene(2);
   }
 
 }
