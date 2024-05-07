@@ -966,7 +966,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.17600001, y: 0.071275145}
   m_AnchorMax: {x: 0.791, y: 0.32462433}
-  m_AnchoredPosition: {x: -0.80407715, y: 4.0245056}
+  m_AnchoredPosition: {x: -0.80407715, y: 4.024498}
   m_SizeDelta: {x: 1.6084003, y: -3.1389008}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &234136702
@@ -1477,7 +1477,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.045580834, y: 0.633}
   m_AnchorMax: {x: 0.5745128, y: 0.712695}
-  m_AnchoredPosition: {x: -0.6000061, y: 1.6759949}
+  m_AnchoredPosition: {x: -0.6000366, y: 1.6759949}
   m_SizeDelta: {x: -1.8863983, y: -6.8586006}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &424667882
@@ -1731,7 +1731,6 @@ MonoBehaviour:
   width: 0
   material: {fileID: 2100000, guid: 7e874b03906e55e40bb760468ee950fa, type: 2}
   steps: 0
-  image: {fileID: 0}
   canvas: 0
   linesContainer: {fileID: 0}
   Schema: []
@@ -3150,7 +3149,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -9.201172, y: -8.0522995}
+  m_AnchoredPosition: {x: -9.201187, y: -8.0522995}
   m_SizeDelta: {x: -18.402, y: 84.4363}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &900392455
@@ -3753,7 +3752,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.045580834, y: 0.54700005}
   m_AnchorMax: {x: 0.58064514, y: 0.62925994}
-  m_AnchoredPosition: {x: -1.0970154, y: 0.5}
+  m_AnchoredPosition: {x: -1.0969849, y: 0.5}
   m_SizeDelta: {x: -7.1689987, y: -1.828598}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1102165192
@@ -4793,7 +4792,7 @@ MonoBehaviour:
     \u0413\u0415\u041D\u0415\u0420\u0410\u0426\u0418\u0418 \u0418 \u0412\u0412\u0415\u0414\u0415\u041D\u041D\u041E\u041C
     \u041D\u0410\u0417\u0412\u0410\u041D\u0418\u0418\n\u041C\u0410\u041A\u0421\u0418\u041C\u0410\u041B\u042C\u041D\u041E\u0415
     \u0427\u0418\u0421\u041B\u041E \u0421\u0418\u041C\u0412\u041E\u041B\u041E\u0412
-    - 20"
+    - 30"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b7e8ee81957a58e4babcf2e874a02165, type: 2}
   m_sharedMaterial: {fileID: 4206226680991808604, guid: b7e8ee81957a58e4babcf2e874a02165, type: 2}
@@ -7237,7 +7236,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.611, y: 0.3811102}
   m_AnchorMax: {x: 0.92600006, y: 0.4417006}
-  m_AnchoredPosition: {x: 2.3919983, y: 0.7400055}
+  m_AnchoredPosition: {x: 2.3919983, y: 0.73999023}
   m_SizeDelta: {x: 5, y: 4.5878906}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1874003281
@@ -8158,7 +8157,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.045580834, y: 0.37285036}
   m_AnchorMax: {x: 0.58064514, y: 0.4524802}
-  m_AnchoredPosition: {x: -1.0968018, y: -21.9962}
+  m_AnchoredPosition: {x: -1.0968018, y: -21.996216}
   m_SizeDelta: {x: 1.4066, y: 37.9438}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2088567162

@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using TMPro;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -15,7 +16,6 @@ public class UIControl : MonoBehaviour
   public TMP_InputField InputWight;
   public TMP_InputField InputSize;
   public TMP_InputField InputSchemaName;
-  //public TMP_Dropdown ShapeDropdown;
   public Slider ProgressBar;
 
   public Button startButton;
@@ -170,14 +170,13 @@ public class UIControl : MonoBehaviour
       GetComponent<GenerateStringArt>().steps = lines;
       GetComponent<GenerateStringArt>().width = (640 * wight) / size;
       GetComponent<GenerateStringArt>().canvas = shape;
-      GetComponent<GenerateStringArt>().image = image;
       GetComponent<GenerateStringArt>().size = image.width;
       GetComponent<GenerateStringArt>().pixelArray = GetPixelArray();
       GetComponent<GenerateStringArt>().CurrentStep = 0;
       GetComponent<GenerateStringArt>().nodes = GetComponent<GenerateStringArt>().CreateNodes();
       GetComponent<GenerateStringArt>().activPoint = GetComponent<GenerateStringArt>().nodes[0];
       GetComponent<GenerateStringArt>().direct = new();
-      GetComponent<GenerateStringArt>().linesContainer = new();
+      CreateLineRenderer(GetComponent<GenerateStringArt>().activPoint.Coords);
       GetComponent<GenerateStringArt>().Schema = new();
 
       menu.enabled = false;
@@ -220,7 +219,7 @@ public class UIControl : MonoBehaviour
   public void SaveSchemaName()
   {
     string inputUser = InputSchemaName.text.Trim();
-    if(inputUser.Length <= 20 && !string.IsNullOrEmpty(inputUser))
+    if(inputUser.Length <= 30 && !string.IsNullOrEmpty(inputUser))
     {
       schemaName = inputUser;
     }
@@ -262,6 +261,17 @@ public class UIControl : MonoBehaviour
       ScreenCapture.CaptureScreenshot(filename);
     else if (Application.platform == RuntimePlatform.WindowsEditor)
       ScreenCapture.CaptureScreenshot(path);
+  }
+  public void CreateLineRenderer(Vector3 startPoint)
+  {
+    GetComponent<GenerateStringArt>().linesContainer = new GameObject();
+    GetComponent<GenerateStringArt>().linesContainer.transform.position = startPoint;
+    var lineRender = GetComponent<GenerateStringArt>().linesContainer.AddComponent<LineRenderer>();
+    lineRender.positionCount = lines + 2;
+    lineRender.startWidth = (640 * wight) / size;
+    lineRender.endWidth = (640 * wight) / size;
+    lineRender.material = GetComponent<GenerateStringArt>().material;
+    lineRender.SetPosition(0, startPoint);
   }
   #endregion
 }

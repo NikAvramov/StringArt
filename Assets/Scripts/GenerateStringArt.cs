@@ -11,7 +11,6 @@ public class GenerateStringArt : MonoBehaviour
   public int steps;
   public int CurrentStep { get; set; }
   public List<Nodes> nodes;
-  public Texture2D image;
   public CanvasShape canvas;
   public float[,] pixelArray;
   public Nodes activPoint;
@@ -47,7 +46,7 @@ public class GenerateStringArt : MonoBehaviour
         }
       }
       var endPoint = direct.Direction;
-      DrawLine(activPoint.Coords, endPoint.Coords);
+      DrawLineTo(CurrentStep + 1, endPoint.Coords);
 
       foreach (var pixel in direct.PixelsInLine)
       {
@@ -56,8 +55,11 @@ public class GenerateStringArt : MonoBehaviour
         pixelArray[(int)pixel.x, (int)pixel.y] = Mathf.Clamp(pixelArray[(int)pixel.x, (int)pixel.y], 0f, 1f);
       }
 
-      Schema.Add(new NodesMap(CurrentStep,endPoint.ID, width, (int)endPoint.Coords.x, (int)endPoint.Coords.y));
+      Schema.Add(new NodesMap(CurrentStep, endPoint.ID, width, (int)endPoint.Coords.x, (int)endPoint.Coords.y));
       activPoint = endPoint;
+
+
+
       GetComponent<UIControl>().ProgressBar.value = CurrentStep;
       CurrentStep++;
     }
@@ -118,16 +120,28 @@ public class GenerateStringArt : MonoBehaviour
     }
     return values;
   }
-  public void DrawLine(Vector2 start, Vector2 end)
+  public void DrawLineTo(int index, Vector3 point)
   {
-    var line = new GameObject();
-    line.transform.SetParent(linesContainer.transform);
-    var lineRender = line.AddComponent<LineRenderer>();
-    lineRender.positionCount = 2;
+    linesContainer.GetComponent<LineRenderer>().SetPosition(index, point);
+  }
+  public void DrawAllLines(List<NodesMap> schema)
+  {
+    var allLine = new GameObject();
+    allLine.transform.SetParent(linesContainer.transform);
+    var lineRender = allLine.AddComponent<LineRenderer>();
+    lineRender.positionCount = schema.Count + 1;
     lineRender.startWidth = width;
     lineRender.endWidth = width;
     lineRender.material = material;
-    lineRender.SetPositions(new Vector3[] { start, end });
+
+    var pointArray = new Vector3[schema.Count + 1];
+    pointArray[0] = new Vector3(0, 0, 0);
+    for (int i = 0; i < pointArray.Length; i++)
+    {
+      pointArray[i + 1] = new Vector3(schema[i].X, schema[i].Y, 0);
+    }
+
+    lineRender.SetPositions(pointArray);
   }
   public List<Nodes> CreateNodes()
   {
