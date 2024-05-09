@@ -17,6 +17,17 @@ public class GenerateStringArt : MonoBehaviour
   public Direct direct; //вспомогательная переменная которая будет хранить напраление с наибольшим уровенем серого
   public GameObject linesContainer;
   public List<NodesMap> Schema;
+
+  private List<Vector2> linePixel;//вспомогательные переменные хранящие координаты пикселей в текущей линии
+  private float sumGrayScale;//и сумму серого в этой линии
+  private Nodes endPoint;
+
+  private List<Vector2> allPixelInLine;//вспомогательная переменная для метода Безенхейма
+  private int deltaX;
+  private int deltaY;
+  private int xPosition;
+  private int yPosition;
+
   #endregion
 
   void Update()
@@ -30,22 +41,21 @@ public class GenerateStringArt : MonoBehaviour
       {
         if (nodes[j] != activPoint)
         {
-          var linePixel = GetAllPixelInLine(activPoint.Coords, nodes[j].Coords);
-          float sumGrayScale = 0f;
+          linePixel = GetAllPixelInLine(activPoint.Coords, nodes[j].Coords);
+          sumGrayScale = 0f;
           foreach (var pixel in linePixel)
           {
             sumGrayScale += pixelArray[(int)pixel.x, (int)pixel.y];
           }
-          float mediana = sumGrayScale / linePixel.Count;
-          if (mediana < direct.GrayScale)
+          if (sumGrayScale / linePixel.Count < direct.GrayScale)
           {
-            direct.GrayScale = mediana;
+            direct.GrayScale = sumGrayScale / linePixel.Count;
             direct.Direction = nodes[j];
             direct.PixelsInLine = linePixel;
           }
         }
       }
-      var endPoint = direct.Direction;
+      endPoint = direct.Direction;
       DrawLineTo(CurrentStep + 1, endPoint.Coords);
 
       foreach (var pixel in direct.PixelsInLine)
@@ -58,8 +68,6 @@ public class GenerateStringArt : MonoBehaviour
       Schema.Add(new NodesMap(CurrentStep, endPoint.ID, width, (int)endPoint.Coords.x, (int)endPoint.Coords.y));
       activPoint = endPoint;
 
-
-
       GetComponent<UIControl>().ProgressBar.value = CurrentStep;
       CurrentStep++;
     }
@@ -68,9 +76,9 @@ public class GenerateStringArt : MonoBehaviour
   //реализация алгоритма Безенхейма
   public List<Vector2> GetAllPixelInLine(Vector2 start, Vector2 end)
   {
-    var values = new List<Vector2>();
-    var deltaX = (int)end.x - (int)start.x;
-    var deltaY = (int)end.y - (int)start.y;
+    allPixelInLine = new List<Vector2>();
+    deltaX = (int)end.x - (int)start.x;
+    deltaY = (int)end.y - (int)start.y;
 
     if (Mathf.Abs(deltaX) >= Mathf.Abs(deltaY))
     {
@@ -78,20 +86,18 @@ public class GenerateStringArt : MonoBehaviour
       {
         for (int i = 0; i < Mathf.Abs(deltaX); i++)
         {
-          int x = (int)start.x + i;
-          int y = Mathf.RoundToInt(((float)deltaY / (float)deltaX) * (x - (int)start.x) + start.y);
-          var coord = new Vector2(x, y);
-          values.Add(coord);
+          xPosition = (int)start.x + i;
+          yPosition = Mathf.RoundToInt(((float)deltaY / (float)deltaX) * (xPosition - (int)start.x) + start.y);
+          allPixelInLine.Add(new Vector2(xPosition, yPosition));
         }
       }
       else
       {
         for (int i = 0; i < Mathf.Abs(deltaX); i++)
         {
-          int x = (int)start.x - i;
-          int y = Mathf.RoundToInt(((float)deltaY / (float)deltaX) * (x - (int)start.x) + start.y);
-          var coord = new Vector2(x, y);
-          values.Add(coord);
+          xPosition = (int)start.x - i;
+          yPosition = Mathf.RoundToInt(((float)deltaY / (float)deltaX) * (xPosition - (int)start.x) + start.y);
+          allPixelInLine.Add(new Vector2(xPosition, yPosition));
         }
       }
     }
@@ -101,24 +107,22 @@ public class GenerateStringArt : MonoBehaviour
       {
         for (int i = 0; i < Mathf.Abs(deltaY); i++)
         {
-          int y = (int)start.y + i;
-          int x = Mathf.RoundToInt(((float)deltaX / (float)deltaY) * (y - (int)start.y) + start.x);
-          var coord = new Vector2(x, y);
-          values.Add(coord);
+          yPosition = (int)start.y + i;
+          xPosition = Mathf.RoundToInt(((float)deltaX / (float)deltaY) * (yPosition - (int)start.y) + start.x);
+          allPixelInLine.Add(new Vector2(xPosition, yPosition));
         }
       }
       else
       {
         for (int i = 0; i < Mathf.Abs(deltaY); i++)
         {
-          int y = (int)start.y - i;
-          int x = Mathf.RoundToInt(((float)deltaX / (float)deltaY) * (y - (int)start.y) + start.x);
-          var coord = new Vector2(x, y);
-          values.Add(coord);
+          yPosition = (int)start.y - i;
+          xPosition = Mathf.RoundToInt(((float)deltaX / (float)deltaY) * (yPosition - (int)start.y) + start.x);
+          allPixelInLine.Add(new Vector2(xPosition, yPosition));
         }
       }
     }
-    return values;
+    return allPixelInLine;
   }
   public void DrawLineTo(int index, Vector3 point)
   {
@@ -126,19 +130,18 @@ public class GenerateStringArt : MonoBehaviour
   }
   public void DrawAllLines(List<NodesMap> schema)
   {
-    var allLine = new GameObject();
-    allLine.transform.SetParent(linesContainer.transform);
-    var lineRender = allLine.AddComponent<LineRenderer>();
+    linesContainer = new GameObject();
+    var lineRender = linesContainer.AddComponent<LineRenderer>();
     lineRender.positionCount = schema.Count + 1;
     lineRender.startWidth = width;
     lineRender.endWidth = width;
     lineRender.material = material;
 
     var pointArray = new Vector3[schema.Count + 1];
-    pointArray[0] = new Vector3(0, 0, 0);
-    for (int i = 0; i < pointArray.Length; i++)
+    pointArray[0] = nodes[0].Coords;
+    for (int i = 1; i < pointArray.Length; i++)
     {
-      pointArray[i + 1] = new Vector3(schema[i].X, schema[i].Y, 0);
+      pointArray[i] = new Vector3(schema[i - 1].X, schema[i - 1].Y, 0);
     }
 
     lineRender.SetPositions(pointArray);

@@ -3,7 +3,20 @@ guid: c23c91061b39abe448c5b1605c3dee8d
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - step: {instanceID: 0}
+  - node: {instanceID: 0}
+  - nextNode: {instanceID: 0}
+  - schemaName: {instanceID: 0}
+  - message: {instanceID: 0}
+  - messageParent: {instanceID: 0}
+  - material: {instanceID: 0}
+  - currentLine: {instanceID: 0}
+  - pointPrefab: {instanceID: 0}
+  - activPoint: {instanceID: 0}
+  - endPoint: {instanceID: 0}
+  - canvas: {instanceID: 0}
+  - voise_100: {fileID: 8300000, guid: 3015e1d8c4dd90147a1dbb6f3b0bf52b, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
