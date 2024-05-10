@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class StepWeavingUIControl : MonoBehaviour
 {
@@ -17,10 +18,11 @@ public class StepWeavingUIControl : MonoBehaviour
   public TMP_Text schemaName;
   public GameObject message;
   public GameObject messageParent;
+  public Toggle autoPlayToggle;
+  public float timeStepAutoPlay;
 
   public float widthLine;
   public Material material;
-  //public GameObject currentLine;
 
   public TMP_Text pointPrefab;
   public TMP_Text activPoint;
@@ -98,6 +100,8 @@ public class StepWeavingUIControl : MonoBehaviour
   void Start()
   {
     InitializationVoices();
+    autoPlayToggle.onValueChanged.AddListener(delegate { SwitchAutoPlay(autoPlayToggle); });
+    timeStepAutoPlay = 4f;
 
     lines = new GameObject[nodes.Count];
     activPoint = Instantiate(pointPrefab, canvas);
@@ -187,22 +191,33 @@ public class StepWeavingUIControl : MonoBehaviour
     var mes = Instantiate(message, messageParent.transform);
     Destroy(mes, 1);
   }
+  public void SwitchAutoPlay(Toggle autoPlay)
+  {
+    if (autoPlay.isOn)
+    {
+      AutoPlayOn();
+    }
+    else
+    {
+      AutoPlayOff();
+    }
+  }
   public void AutoPlayOn()
   {
-    StartCoroutine(MakeAStep(3.5f));
+    StartCoroutine(MakeAStep());
   }
   public void AutoPlayOff()
   {
     StopAllCoroutines();
   }
-  private IEnumerator MakeAStep(float wait)
+  private IEnumerator MakeAStep()
   {
     while (currentNode.IDstep <= nodes.Count)
     {
       NextStep();
       var nextNodeVoice = VoiceAnalizeNumber(nextNode.text);
       StartCoroutine(PlayVoice(nextNodeVoice));
-      yield return new WaitForSeconds(wait);
+      yield return new WaitForSeconds(timeStepAutoPlay);
     }
   }
   private IEnumerator PlayVoice(List<AudioSource> voices)
@@ -491,5 +506,21 @@ public class StepWeavingUIControl : MonoBehaviour
 
     voiñe_9A = gameObject.AddComponent<AudioSource>();
     voiñe_9A.clip = voiñe_9;
+  }
+  public void DoAutoPlaySlow()
+  {
+    timeStepAutoPlay += 0.5f;
+    if (timeStepAutoPlay > 10)
+    {
+      timeStepAutoPlay = 10;
+    }
+  }
+  public void DoAutoPlayFast()
+  {
+    timeStepAutoPlay -= 0.5f;
+    if (timeStepAutoPlay < 4)
+    {
+      timeStepAutoPlay = 4;
+    }
   }
 }
