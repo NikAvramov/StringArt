@@ -16,6 +16,10 @@ public class StepWeavingUIControl : MonoBehaviour
   public TMP_Text node;
   public TMP_Text nextNode;
   public TMP_Text schemaName;
+  public TMP_Text totalNodes;
+  public TMP_Text totalSteps;
+  public TMP_Text sizeCanvas;
+  public TMP_Text widthFiber;
   public GameObject message;
   public GameObject messageParent;
   public Toggle autoPlayToggle;
@@ -120,6 +124,10 @@ public class StepWeavingUIControl : MonoBehaviour
     step.text = (currentNode.IDstep + 1).ToString();
     node.text = currentNode.IDnode.ToString();
     nextNode.text = nodes.FirstOrDefault(n => n.IDstep == currentNode.IDstep + 1).IDnode.ToString();
+    totalNodes.text = currentNode.TotalCountOfNodes.ToString();
+    totalSteps.text = currentNode.TotalCountOfLines.ToString();
+    sizeCanvas.text = currentNode.SizeOfCanvas.ToString();
+    widthFiber.text = currentNode.WidthOfFiber.ToString();
 
     DrawLine();
   }
@@ -152,6 +160,10 @@ public class StepWeavingUIControl : MonoBehaviour
       step.text = (currentNode.IDstep + 1).ToString();
       node.text = currentNode.IDnode.ToString();
       nextNode.text = nodes.FirstOrDefault(n => n.IDstep == currentNode.IDstep + 1).IDnode.ToString();
+      totalNodes.text = currentNode.TotalCountOfNodes.ToString();
+      totalSteps.text = currentNode.TotalCountOfLines.ToString();
+      sizeCanvas.text = currentNode.SizeOfCanvas.ToString();
+      widthFiber.text = currentNode.WidthOfFiber.ToString();
       DrawLine();
     }
   }
@@ -167,6 +179,10 @@ public class StepWeavingUIControl : MonoBehaviour
       step.text = (currentNode.IDstep + 1).ToString();
       node.text = currentNode.IDnode.ToString();
       nextNode.text = nodes.FirstOrDefault(n => n.IDstep == currentNode.IDstep + 1).IDnode.ToString();
+      totalNodes.text = currentNode.TotalCountOfNodes.ToString();
+      totalSteps.text = currentNode.TotalCountOfLines.ToString();
+      sizeCanvas.text = currentNode.SizeOfCanvas.ToString();
+      widthFiber.text = currentNode.WidthOfFiber.ToString();
 
       Vector2 start = new(currentNode.X, currentNode.Y);
       var nextPointNode = nodes.FirstOrDefault(n => n.IDstep == currentNode.IDstep + 1);

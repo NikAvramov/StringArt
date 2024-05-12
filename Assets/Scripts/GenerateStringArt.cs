@@ -18,6 +18,9 @@ public class GenerateStringArt : MonoBehaviour
   public GameObject linesContainer;
   public List<NodesMap> Schema;
 
+  public float widthOfFiber;
+  public int sizeCanvasInMilimeters;
+
   private List<Vector2> linePixel;//вспомогательные переменные хранящие координаты пикселей в текущей линии
   private float sumGrayScale;//и сумму серого в этой линии
   private Nodes endPoint;
@@ -65,7 +68,10 @@ public class GenerateStringArt : MonoBehaviour
         pixelArray[(int)pixel.x, (int)pixel.y] = Mathf.Clamp(pixelArray[(int)pixel.x, (int)pixel.y], 0f, 1f);
       }
 
-      Schema.Add(new NodesMap(CurrentStep, endPoint.ID, width, (int)endPoint.Coords.x, (int)endPoint.Coords.y));
+      Schema.Add(new NodesMap(
+        CurrentStep, endPoint.ID, width, (int)endPoint.Coords.x, (int)endPoint.Coords.y, 
+        countOfPoint, steps, sizeCanvasInMilimeters, widthOfFiber));
+
       activPoint = endPoint;
 
       GetComponent<UIControl>().ProgressBar.value = CurrentStep;
@@ -237,7 +243,13 @@ public class NodesMap
   public int X;
   public int Y;
   public bool IsReady;
-  public NodesMap(int iDstep, int idnode, float width, int x, int y)
+
+  public int TotalCountOfNodes;
+  public int TotalCountOfLines;
+  public int SizeOfCanvas;
+  public float WidthOfFiber;
+
+  public NodesMap(int iDstep, int idnode, float width, int x, int y, int totalNods, int totalLines, int sizeCanvas, float widthFiber)
   {
     IDstep = iDstep;
     IDnode = idnode;
@@ -245,6 +257,11 @@ public class NodesMap
     X = x;
     Y = y;
     IsReady = false;
+
+    TotalCountOfNodes = totalNods;
+    TotalCountOfLines = totalLines;
+    SizeOfCanvas = sizeCanvas;
+    WidthOfFiber = widthFiber;
   }
   public override string ToString()
   {

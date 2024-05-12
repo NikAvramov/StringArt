@@ -1,8 +1,6 @@
-using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using TMPro;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -37,20 +35,20 @@ public class UIControl : MonoBehaviour
   public string schemaName;
   public Texture2D image;
   #endregion
-  
+
   #region Методы
   public void SaveCountOfNodes()
   {
     bool result = int.TryParse(InputNodes.text.Trim(), out int inputUser);
-    if (result) 
+    if (result)
     {
       verifiInputUser = true;
-      if(inputUser > 500)
+      if (inputUser > 500)
       {
         nodes = 500;
       }
-      else if(inputUser < 100)
-      { 
+      else if (inputUser < 100)
+      {
         nodes = 100;
       }
       else
@@ -83,7 +81,7 @@ public class UIControl : MonoBehaviour
       }
     }
     else
-    { 
+    {
       verifiInputUser = false;
     }
     ProgressBar.minValue = 0;
@@ -110,8 +108,8 @@ public class UIControl : MonoBehaviour
       }
     }
     else
-    { 
-      verifiInputUser = false; 
+    {
+      verifiInputUser = false;
     }
   }
   public void SaveSize()
@@ -169,8 +167,10 @@ public class UIControl : MonoBehaviour
       GetComponent<GenerateStringArt>().countOfPoint = nodes;
       GetComponent<GenerateStringArt>().steps = lines;
       GetComponent<GenerateStringArt>().width = (640 * wight) / size;
+      GetComponent<GenerateStringArt>().widthOfFiber = wight;
       GetComponent<GenerateStringArt>().canvas = shape;
       GetComponent<GenerateStringArt>().size = image.width;
+      GetComponent<GenerateStringArt>().sizeCanvasInMilimeters = size;
       GetComponent<GenerateStringArt>().pixelArray = GetPixelArray();
       GetComponent<GenerateStringArt>().CurrentStep = 0;
       GetComponent<GenerateStringArt>().nodes = GetComponent<GenerateStringArt>().CreateNodes();
@@ -199,7 +199,7 @@ public class UIControl : MonoBehaviour
           imageScale.filterMode = FilterMode.Point;
           imageScale.wrapMode = TextureWrapMode.Clamp;
           image = imageScale;
-          
+
           Rect rect = new(0, 0, image.width, image.height);
           activButtonImage = Sprite.Create(image, rect, new Vector2(0.5f, 0.5f));
           startButton.GetComponent<Image>().sprite = activButtonImage;
@@ -219,7 +219,7 @@ public class UIControl : MonoBehaviour
   public void SaveSchemaName()
   {
     string inputUser = InputSchemaName.text.Trim();
-    if(inputUser.Length <= 30 && !string.IsNullOrEmpty(inputUser))
+    if (inputUser.Length <= 30 && !string.IsNullOrEmpty(inputUser))
     {
       schemaName = inputUser;
     }

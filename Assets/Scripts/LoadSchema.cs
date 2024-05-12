@@ -7,7 +7,7 @@ public class LoadSchema : MonoBehaviour
   {
     link = GameObject.FindGameObjectsWithTag("MainCamera")[0];
   }
-  public void LoadSchemaWithName() 
+  public void LoadSchemaWithName()
   {
     string name = transform.name;
     link.GetComponent<StepWeavingUIControl>().nodes = link.GetComponent<ListSchemaUIControl>().Schemas[name];
