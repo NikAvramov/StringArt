@@ -283,6 +283,29 @@ public class StepWeavingUIControl : MonoBehaviour
             case 5: result.Add(voiñe_500A); break;
           }
         }
+        else
+        {
+          var inits = new int[] { number2, number3 };
+          switch (number1)
+          {
+            case 1:
+              result.Add(voiñe_100A);
+              AddTwoLastNumber(inits);
+              break;
+            case 2:
+              result.Add(voiñe_200A);
+              AddTwoLastNumber(inits);
+              break;
+            case 3:
+              result.Add(voiñe_300A);
+              AddTwoLastNumber(inits);
+              break;
+            case 4:
+              result.Add(voiñe_400A);
+              AddTwoLastNumber(inits);
+              break;
+          }
+        }
       }
       else if (number2 == 0)
       {
