@@ -179,6 +179,8 @@ public class UIControl : MonoBehaviour
       CreateLineRenderer(GetComponent<GenerateStringArt>().activPoint.Coords);
       GetComponent<GenerateStringArt>().Schema = new();
 
+      GetComponent<GenerateStringArt>().keyValuePairs = GetComponent<GenerateStringArt>().KalculateCoordAllPairs(GetComponent<GenerateStringArt>().nodes);
+
       menu.enabled = false;
       workpace.enabled = true;
       GetComponent<GenerateStringArt>().enabled = true;

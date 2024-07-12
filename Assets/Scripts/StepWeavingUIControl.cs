@@ -105,7 +105,7 @@ public class StepWeavingUIControl : MonoBehaviour
   {
     InitializationVoices();
     autoPlayToggle.onValueChanged.AddListener(delegate { SwitchAutoPlay(autoPlayToggle); });
-    timeStepAutoPlay = 4f;
+    timeStepAutoPlay = 3f;
 
     lines = new GameObject[nodes.Count];
     activPoint = Instantiate(pointPrefab, canvas);
@@ -557,9 +557,9 @@ public class StepWeavingUIControl : MonoBehaviour
   public void DoAutoPlayFast()
   {
     timeStepAutoPlay -= 0.5f;
-    if (timeStepAutoPlay < 4)
+    if (timeStepAutoPlay < 3)
     {
-      timeStepAutoPlay = 4;
+      timeStepAutoPlay = 3;
     }
   }
 }

@@ -21,6 +21,8 @@ public class GenerateStringArt : MonoBehaviour
   public float widthOfFiber;
   public int sizeCanvasInMilimeters;
 
+  public Dictionary<(int, int), List<Vector2>> keyValuePairs;
+
   private List<Vector2> linePixel;//вспомогательные переменные хранящие координаты пикселей в текущей линии
   private float sumGrayScale;//и сумму серого в этой линии
   private Nodes endPoint;
@@ -35,47 +37,52 @@ public class GenerateStringArt : MonoBehaviour
 
   void Update()
   {
-    if (CurrentStep <= steps)
+    for (int i = 0; i < 10; i++)
     {
-      direct.Direction = activPoint;//задаем изначальные значения чтобы сравнивать
-      direct.GrayScale = 1.1f;
-      //в цикле перебираем все направления из активной точи и считаем среднее значение по уровню серого
-      for (int j = 0; j < nodes.Count; j++)
+      if (CurrentStep <= steps)
       {
-        if (nodes[j] != activPoint)
+        direct.Direction = activPoint;//задаем изначальные значения чтобы сравнивать
+        direct.GrayScale = 1.1f;
+        //в цикле перебираем все направления из активной точи и считаем среднее значение по уровню серого
+        for (int j = 0; j < nodes.Count; j++)
         {
-          linePixel = GetAllPixelInLine(activPoint.Coords, nodes[j].Coords);
-          sumGrayScale = 0f;
-          foreach (var pixel in linePixel)
+          if (nodes[j] != activPoint)
           {
-            sumGrayScale += pixelArray[(int)pixel.x, (int)pixel.y];
-          }
-          if (sumGrayScale / linePixel.Count < direct.GrayScale)
-          {
-            direct.GrayScale = sumGrayScale / linePixel.Count;
-            direct.Direction = nodes[j];
-            direct.PixelsInLine = linePixel;
+            //linePixel = GetAllPixelInLine(activPoint.Coords, nodes[j].Coords);
+            linePixel = keyValuePairs[(activPoint.ID, nodes[j].ID)];
+            sumGrayScale = 0f;
+            foreach (var pixel in linePixel)
+            {
+              sumGrayScale += pixelArray[(int)pixel.x, (int)pixel.y];
+            }
+            if (sumGrayScale / linePixel.Count < direct.GrayScale)
+            {
+              direct.GrayScale = sumGrayScale / linePixel.Count;
+              direct.Direction = nodes[j];
+              direct.PixelsInLine = linePixel;
+            }
           }
         }
+        endPoint = direct.Direction;
+        DrawLineTo(CurrentStep + 1, endPoint.Coords);
+
+        foreach (var pixel in direct.PixelsInLine)
+        {
+          pixelArray[(int)pixel.x, (int)pixel.y] += width;//добавляем серого там где нарисовали линию
+                                                          //ограничиваем диапазон серого между 0 и 1
+          pixelArray[(int)pixel.x, (int)pixel.y] = Mathf.Clamp(pixelArray[(int)pixel.x, (int)pixel.y], 0f, 1f);
+        }
+
+        Schema.Add(new NodesMap(
+          CurrentStep, endPoint.ID, width, (int)endPoint.Coords.x, (int)endPoint.Coords.y,
+          countOfPoint, steps, sizeCanvasInMilimeters, widthOfFiber));
+
+        activPoint = endPoint;
+
+        GetComponent<UIControl>().ProgressBar.value = CurrentStep;
+        CurrentStep++;
       }
-      endPoint = direct.Direction;
-      DrawLineTo(CurrentStep + 1, endPoint.Coords);
-
-      foreach (var pixel in direct.PixelsInLine)
-      {
-        pixelArray[(int)pixel.x, (int)pixel.y] += width;//добавляем серого там где нарисовали линию
-        //ограничиваем диапазон серого между 0 и 1
-        pixelArray[(int)pixel.x, (int)pixel.y] = Mathf.Clamp(pixelArray[(int)pixel.x, (int)pixel.y], 0f, 1f);
-      }
-
-      Schema.Add(new NodesMap(
-        CurrentStep, endPoint.ID, width, (int)endPoint.Coords.x, (int)endPoint.Coords.y, 
-        countOfPoint, steps, sizeCanvasInMilimeters, widthOfFiber));
-
-      activPoint = endPoint;
-
-      GetComponent<UIControl>().ProgressBar.value = CurrentStep;
-      CurrentStep++;
+      else break;
     }
   }
   //метод для получения координат всех пикселей на линии между 2 пикселями
@@ -129,6 +136,22 @@ public class GenerateStringArt : MonoBehaviour
       }
     }
     return allPixelInLine;
+  }
+  public Dictionary<(int,int), List<Vector2>> KalculateCoordAllPairs (List<Nodes> targetNodes)
+  {
+    var result = new Dictionary<(int,int), List<Vector2>>();
+    for (int i = 0; i < targetNodes.Count; i++)
+    {
+      for(int j = 0; j < targetNodes.Count; j++)
+      {
+        if (targetNodes[i].ID != targetNodes[j].ID)
+        {
+          result.Add((targetNodes[i].ID, targetNodes[j].ID), GetAllPixelInLine(targetNodes[i].Coords, targetNodes[j].Coords));
+        }
+      }
+    }
+
+    return result;
   }
   public void DrawLineTo(int index, Vector3 point)
   {
