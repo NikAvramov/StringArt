@@ -25,6 +25,7 @@ public class UIControl : MonoBehaviour
 
   public Canvas menu;
   public Canvas workpace;
+  public Canvas load;
 
   public int nodes;
   public int lines;
@@ -164,6 +165,8 @@ public class UIControl : MonoBehaviour
   {
     if (GetComponent<GenerateStringArt>().enabled == false && image != null && verifiInputUser)
     {
+      menu.enabled = false;
+      workpace.enabled = true;
       GetComponent<GenerateStringArt>().countOfPoint = nodes;
       GetComponent<GenerateStringArt>().steps = lines;
       GetComponent<GenerateStringArt>().width = (640 * wight) / size;
@@ -178,11 +181,7 @@ public class UIControl : MonoBehaviour
       GetComponent<GenerateStringArt>().direct = new();
       CreateLineRenderer(GetComponent<GenerateStringArt>().activPoint.Coords);
       GetComponent<GenerateStringArt>().Schema = new();
-
       GetComponent<GenerateStringArt>().keyValuePairs = GetComponent<GenerateStringArt>().KalculateCoordAllPairs(GetComponent<GenerateStringArt>().nodes);
-
-      menu.enabled = false;
-      workpace.enabled = true;
       GetComponent<GenerateStringArt>().enabled = true;
     }
   }
@@ -195,17 +194,17 @@ public class UIControl : MonoBehaviour
       if (path != null)
       {
         Texture2D img = LoadImageAtPath(path, -1, false);
-        if (img.height == img.width)
-        {
-          var imageScale = ScaleAndCropTexture.ScaleTexture(img, 640, 640);
-          imageScale.filterMode = FilterMode.Point;
-          imageScale.wrapMode = TextureWrapMode.Clamp;
-          image = imageScale;
+        var newSize = img.height >= img.width ? new Vector2(img.width, img.width) : new Vector2(img.height, img.height);
+        var imageCrop = ScaleAndCropTexture.CropTexture(img, newSize);
+        var imageScale = ScaleAndCropTexture.ScaleTexture(img, 640, 640);
+        imageScale.filterMode = FilterMode.Point;
+        imageScale.wrapMode = TextureWrapMode.Clamp;
+        image = imageScale;
 
-          Rect rect = new(0, 0, image.width, image.height);
-          activButtonImage = Sprite.Create(image, rect, new Vector2(0.5f, 0.5f));
-          startButton.GetComponent<Image>().sprite = activButtonImage;
-        }
+        Rect rect = new(0, 0, image.width, image.height);
+        activButtonImage = Sprite.Create(image, rect, new Vector2(0.5f, 0.5f));
+        startButton.GetComponent<Image>().sprite = activButtonImage;
+
       }
     });
   }

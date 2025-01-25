@@ -48,7 +48,6 @@ public class GenerateStringArt : MonoBehaviour
         {
           if (nodes[j] != activPoint)
           {
-            //linePixel = GetAllPixelInLine(activPoint.Coords, nodes[j].Coords);
             linePixel = keyValuePairs[(activPoint.ID, nodes[j].ID)];
             sumGrayScale = 0f;
             foreach (var pixel in linePixel)
