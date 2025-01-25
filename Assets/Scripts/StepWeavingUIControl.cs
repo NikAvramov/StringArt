@@ -165,6 +165,7 @@ public class StepWeavingUIControl : MonoBehaviour
       sizeCanvas.text = currentNode.SizeOfCanvas.ToString();
       widthFiber.text = currentNode.WidthOfFiber.ToString();
       DrawLine();
+      SaveProgress();
     }
   }
   public void PreviousStep()
@@ -191,6 +192,7 @@ public class StepWeavingUIControl : MonoBehaviour
       activPoint.text = currentNode.IDnode.ToString();
       endPoint.transform.position = end;
       endPoint.text = nextPointNode.IDnode.ToString();
+      SaveProgress();
     }
   }
   public void SaveProgress()
@@ -203,9 +205,6 @@ public class StepWeavingUIControl : MonoBehaviour
     using var fs = new FileStream(path, FileMode.OpenOrCreate);
     var bf = new BinaryFormatter();
     bf.Serialize(fs, nodes);
-
-    var mes = Instantiate(message, messageParent.transform);
-    Destroy(mes, 1);
   }
   public void SwitchAutoPlay(Toggle autoPlay)
   {

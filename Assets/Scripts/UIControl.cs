@@ -196,7 +196,7 @@ public class UIControl : MonoBehaviour
         Texture2D img = LoadImageAtPath(path, -1, false);
         var newSize = img.height >= img.width ? new Vector2(img.width, img.width) : new Vector2(img.height, img.height);
         var imageCrop = ScaleAndCropTexture.CropTexture(img, newSize);
-        var imageScale = ScaleAndCropTexture.ScaleTexture(img, 640, 640);
+        var imageScale = ScaleAndCropTexture.ScaleTexture(imageCrop, 640, 640);
         imageScale.filterMode = FilterMode.Point;
         imageScale.wrapMode = TextureWrapMode.Clamp;
         image = imageScale;
